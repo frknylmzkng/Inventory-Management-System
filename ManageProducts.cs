@@ -18,6 +18,7 @@ namespace Inventory_Management_System
             FormatGrid();
             LoadCategories();
             PopulateProducts();
+            ClearInputs();
         }
 
         private void FormatGrid()
@@ -46,9 +47,7 @@ namespace Inventory_Management_System
                     cmb_searchcat.Items.Add(cat);
                 }
 
-                if (cmb_prodcat.Items.Count > 0)
-                    cmb_prodcat.SelectedIndex = 0;
-
+                cmb_prodcat.SelectedIndex = -1;
                 cmb_searchcat.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -66,11 +65,11 @@ namespace Inventory_Management_System
 
                 if (string.IsNullOrEmpty(categoryFilter) || categoryFilter == "-- Tüm Kategoriler --")
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId DESC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC";
                 }
                 else
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat ORDER BY ProdId DESC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat ORDER BY ProdId ASC";
                     parameters = new SqlParameter[] { new SqlParameter("@cat", categoryFilter) };
                 }
 
@@ -104,8 +103,8 @@ namespace Inventory_Management_System
             txt_prodqty.Text = string.Empty;
             txt_prodprice.Text = string.Empty;
             txt_proddesc.Text = string.Empty;
-            if (cmb_prodcat.Items.Count > 0)
-                cmb_prodcat.SelectedIndex = 0;
+            cmb_prodcat.SelectedIndex = -1;
+            dataGridViewProducts.ClearSelection();
             txt_prodname.Focus();
         }
 
@@ -195,6 +194,12 @@ namespace Inventory_Management_System
                 return;
             }
 
+            if (cmb_prodcat.SelectedItem == null || cmb_prodcat.SelectedIndex == -1)
+            {
+                MessageBox.Show("Lütfen bir kategori seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
                 string query = "UPDATE ProductTable SET ProdName = @name, ProdQty = @qty, ProdPrice = @price, ProdDesc = @desc, ProdCat = @cat WHERE ProdId = @id";
@@ -268,6 +273,8 @@ namespace Inventory_Management_System
                 string cat = row.Cells[5].Value?.ToString() ?? "";
                 if (cmb_prodcat.Items.Contains(cat))
                     cmb_prodcat.SelectedItem = cat;
+                else
+                    cmb_prodcat.SelectedIndex = -1;
             }
         }
 
