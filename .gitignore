@@ -1,0 +1,37 @@
+## Visual Studio / .NET .gitignore
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.pidb
+*.booproj
+*.svclog
+*.mdf
+*.ldf
+*.ndf
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa]rchive/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio temporary files
+*.tmp
+*.bak
+*.swp
+*~
+thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
