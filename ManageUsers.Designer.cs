@@ -29,6 +29,7 @@ namespace Inventory_Management_System
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btn_back = new System.Windows.Forms.Button();
             this.btn_exit = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txt_username = new System.Windows.Forms.TextBox();
@@ -52,6 +53,7 @@ namespace Inventory_Management_System
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.DarkTurquoise;
+            this.panel1.Controls.Add(this.btn_back);
             this.panel1.Controls.Add(this.btn_exit);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -59,6 +61,19 @@ namespace Inventory_Management_System
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(880, 100);
             this.panel1.TabIndex = 0;
+            // 
+            // btn_back
+            // 
+            this.btn_back.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_back.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_back.ForeColor = System.Drawing.Color.White;
+            this.btn_back.Location = new System.Drawing.Point(15, 25);
+            this.btn_back.Name = "btn_back";
+            this.btn_back.Size = new System.Drawing.Size(95, 45);
+            this.btn_back.TabIndex = 16;
+            this.btn_back.Text = "◀ GERİ";
+            this.btn_back.UseVisualStyleBackColor = true;
+            this.btn_back.Click += new System.EventHandler(this.btn_back_Click);
             // 
             // btn_exit
             // 
@@ -180,12 +195,16 @@ namespace Inventory_Management_System
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(125, 323);
+            this.button4.BackColor = System.Drawing.Color.DarkTurquoise;
+            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.button4.ForeColor = System.Drawing.Color.White;
+            this.button4.Location = new System.Drawing.Point(85, 335);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.Size = new System.Drawing.Size(155, 30);
             this.button4.TabIndex = 12;
-            this.button4.Text = "HOME";
-            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Text = "◀ GERİ (ANA MENÜ)";
+            this.button4.UseVisualStyleBackColor = false;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // dataGridView1
@@ -259,5 +278,6 @@ namespace Inventory_Management_System
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btn_exit;
+        private System.Windows.Forms.Button btn_back;
     }
 }

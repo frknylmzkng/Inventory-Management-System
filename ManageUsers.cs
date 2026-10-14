@@ -49,9 +49,16 @@ namespace Inventory_Management_System
             txt_username.Focus();
         }
 
+        private void btn_back_Click(object sender, EventArgs e)
+        {
+            HomeForm home = new HomeForm();
+            home.Show();
+            this.Close();
+        }
+
         private void btn_exit_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            btn_back_Click(sender, e);
         }
 
         private void btn_add_Click(object sender, EventArgs e)
@@ -172,9 +179,7 @@ namespace Inventory_Management_System
 
         private void button4_Click(object sender, EventArgs e)
         {
-            HomeForm home = new HomeForm();
-            home.Show();
-            this.Hide();
+            btn_back_Click(sender, e);
         }
     }
 }
