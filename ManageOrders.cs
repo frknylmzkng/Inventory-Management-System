@@ -25,6 +25,7 @@ namespace Inventory_Management_System
             FormatGrids();
             LoadCustomers();
             LoadProducts();
+            ClearSelections();
         }
 
         private void InitCartTable()
@@ -64,7 +65,7 @@ namespace Inventory_Management_System
         {
             try
             {
-                DataTable dt = DbHelper.ExecuteQuery("SELECT CustId AS [ID], CustName AS [Müşteri Adı], CustPhone AS [Telefon] FROM CustomerTable ORDER BY CustName");
+                DataTable dt = DbHelper.ExecuteQuery("SELECT CustId AS [ID], CustName AS [Müşteri Adı], CustPhone AS [Telefon] FROM CustomerTable ORDER BY CustId ASC");
                 dataGridViewCustomers.DataSource = dt;
             }
             catch (Exception ex)
@@ -77,13 +78,31 @@ namespace Inventory_Management_System
         {
             try
             {
-                DataTable dt = DbHelper.ExecuteQuery("SELECT ProdId AS [ID], ProdName AS [Ürün Adı], ProdQty AS [Stok], ProdPrice AS [Fiyat], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdName");
+                DataTable dt = DbHelper.ExecuteQuery("SELECT ProdId AS [ID], ProdName AS [Ürün Adı], ProdQty AS [Stok], ProdPrice AS [Fiyat], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC");
                 dataGridViewProducts.DataSource = dt;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Ürünler yüklenirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ClearSelections()
+        {
+            txt_custid.Text = string.Empty;
+            txt_custname.Text = string.Empty;
+            txt_qty.Text = string.Empty;
+            selectedProdId = 0;
+            selectedProdName = "";
+            selectedProdPrice = 0;
+            selectedProdStock = 0;
+            dataGridViewCustomers.ClearSelection();
+            dataGridViewProducts.ClearSelection();
+        }
+
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            ClearSelections();
         }
 
         private void dataGridViewCustomers_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -223,9 +242,7 @@ namespace Inventory_Management_System
                 // Clear & reload
                 cartTable.Rows.Clear();
                 CalculateTotal();
-                txt_custid.Text = string.Empty;
-                txt_custname.Text = string.Empty;
-                selectedProdId = 0;
+                ClearSelections();
                 LoadProducts();
             }
             catch (Exception ex)

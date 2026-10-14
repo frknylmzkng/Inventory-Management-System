@@ -108,6 +108,11 @@ namespace Inventory_Management_System
             txt_prodname.Focus();
         }
 
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            ClearInputs();
+        }
+
         private void btn_back_Click(object sender, EventArgs e)
         {
             HomeForm home = new HomeForm();

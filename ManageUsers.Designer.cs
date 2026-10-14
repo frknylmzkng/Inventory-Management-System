@@ -43,6 +43,7 @@ namespace Inventory_Management_System
             this.btn_add = new System.Windows.Forms.Button();
             this.btn_edit = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
+            this.btn_clear = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -193,17 +194,31 @@ namespace Inventory_Management_System
             this.btn_delete.UseVisualStyleBackColor = true;
             this.btn_delete.Click += new System.EventHandler(this.btn_delete_Click);
             // 
+            // btn_clear
+            // 
+            this.btn_clear.BackColor = System.Drawing.Color.DarkOrange;
+            this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_clear.ForeColor = System.Drawing.Color.White;
+            this.btn_clear.Location = new System.Drawing.Point(40, 335);
+            this.btn_clear.Name = "btn_clear";
+            this.btn_clear.Size = new System.Drawing.Size(120, 30);
+            this.btn_clear.TabIndex = 17;
+            this.btn_clear.Text = "SEÇİMİ TEMİZLE";
+            this.btn_clear.UseVisualStyleBackColor = false;
+            this.btn_clear.Click += new System.EventHandler(this.btn_clear_Click);
+            // 
             // button4
             // 
             this.button4.BackColor = System.Drawing.Color.DarkTurquoise;
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.button4.ForeColor = System.Drawing.Color.White;
-            this.button4.Location = new System.Drawing.Point(85, 335);
+            this.button4.Location = new System.Drawing.Point(170, 335);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(155, 30);
+            this.button4.Size = new System.Drawing.Size(115, 30);
             this.button4.TabIndex = 12;
-            this.button4.Text = "◀ GERİ (ANA MENÜ)";
+            this.button4.Text = "◀ ANA MENÜ";
             this.button4.UseVisualStyleBackColor = false;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -233,6 +248,7 @@ namespace Inventory_Management_System
             this.ClientSize = new System.Drawing.Size(880, 570);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.btn_delete);
             this.Controls.Add(this.btn_edit);
@@ -274,6 +290,7 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Button btn_add;
         private System.Windows.Forms.Button btn_edit;
         private System.Windows.Forms.Button btn_delete;
+        private System.Windows.Forms.Button btn_clear;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Panel panel2;

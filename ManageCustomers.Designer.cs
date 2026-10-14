@@ -30,6 +30,7 @@ namespace Inventory_Management_System
             this.btn_add = new System.Windows.Forms.Button();
             this.btn_edit = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
+            this.btn_clear = new System.Windows.Forms.Button();
             this.btn_home = new System.Windows.Forms.Button();
             this.dataGridViewCustomers = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -180,6 +181,19 @@ namespace Inventory_Management_System
             this.btn_delete.UseVisualStyleBackColor = false;
             this.btn_delete.Click += new System.EventHandler(this.btn_delete_Click);
             // 
+            // btn_clear
+            // 
+            this.btn_clear.BackColor = System.Drawing.Color.DarkOrange;
+            this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_clear.ForeColor = System.Drawing.Color.White;
+            this.btn_clear.Location = new System.Drawing.Point(40, 335);
+            this.btn_clear.Name = "btn_clear";
+            this.btn_clear.Size = new System.Drawing.Size(120, 30);
+            this.btn_clear.TabIndex = 13;
+            this.btn_clear.Text = "SEÇİMİ TEMİZLE";
+            this.btn_clear.UseVisualStyleBackColor = false;
+            this.btn_clear.Click += new System.EventHandler(this.btn_clear_Click);
             // 
             // btn_home
             // 
@@ -187,11 +201,11 @@ namespace Inventory_Management_System
             this.btn_home.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_home.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_home.ForeColor = System.Drawing.Color.White;
-            this.btn_home.Location = new System.Drawing.Point(85, 335);
+            this.btn_home.Location = new System.Drawing.Point(170, 335);
             this.btn_home.Name = "btn_home";
-            this.btn_home.Size = new System.Drawing.Size(155, 30);
+            this.btn_home.Size = new System.Drawing.Size(115, 30);
             this.btn_home.TabIndex = 12;
-            this.btn_home.Text = "◀ GERİ (ANA MENÜ)";
+            this.btn_home.Text = "◀ ANA MENÜ";
             this.btn_home.UseVisualStyleBackColor = false;
             this.btn_home.Click += new System.EventHandler(this.btn_home_Click);
             // 
@@ -201,7 +215,7 @@ namespace Inventory_Management_System
             this.dataGridViewCustomers.Location = new System.Drawing.Point(340, 120);
             this.dataGridViewCustomers.Name = "dataGridViewCustomers";
             this.dataGridViewCustomers.Size = new System.Drawing.Size(514, 395);
-            this.dataGridViewCustomers.TabIndex = 13;
+            this.dataGridViewCustomers.TabIndex = 14;
             this.dataGridViewCustomers.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewCustomers_CellClick);
             // 
             // panel2
@@ -211,7 +225,7 @@ namespace Inventory_Management_System
             this.panel2.Location = new System.Drawing.Point(0, 533);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(880, 37);
-            this.panel2.TabIndex = 14;
+            this.panel2.TabIndex = 15;
             // 
             // ManageCustomers
             // 
@@ -221,6 +235,7 @@ namespace Inventory_Management_System
             this.ClientSize = new System.Drawing.Size(880, 570);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.dataGridViewCustomers);
+            this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.btn_home);
             this.Controls.Add(this.btn_delete);
             this.Controls.Add(this.btn_edit);
@@ -258,6 +273,7 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Button btn_add;
         private System.Windows.Forms.Button btn_edit;
         private System.Windows.Forms.Button btn_delete;
+        private System.Windows.Forms.Button btn_clear;
         private System.Windows.Forms.Button btn_home;
         private System.Windows.Forms.DataGridView dataGridViewCustomers;
         private System.Windows.Forms.Panel panel2;

@@ -16,6 +16,7 @@ namespace Inventory_Management_System
         {
             FormatGrid();
             PopulateCategories();
+            ClearInputs();
         }
 
         private void FormatGrid()
@@ -31,7 +32,7 @@ namespace Inventory_Management_System
         {
             try
             {
-                DataTable dt = DbHelper.ExecuteQuery("SELECT CatId AS [Kategori ID], CatName AS [Kategori Adı] FROM CategoryTable ORDER BY CatId DESC");
+                DataTable dt = DbHelper.ExecuteQuery("SELECT CatId AS [Kategori ID], CatName AS [Kategori Adı] FROM CategoryTable ORDER BY CatId ASC");
                 dataGridViewCategories.DataSource = dt;
             }
             catch (Exception ex)
@@ -44,7 +45,13 @@ namespace Inventory_Management_System
         {
             txt_catid.Text = string.Empty;
             txt_catname.Text = string.Empty;
+            dataGridViewCategories.ClearSelection();
             txt_catname.Focus();
+        }
+
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            ClearInputs();
         }
 
         private void btn_back_Click(object sender, EventArgs e)

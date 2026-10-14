@@ -16,6 +16,7 @@ namespace Inventory_Management_System
         {
             FormatGrid();
             PopulateCustomers();
+            ClearInputs();
         }
 
         private void FormatGrid()
@@ -31,7 +32,7 @@ namespace Inventory_Management_System
         {
             try
             {
-                DataTable dt = DbHelper.ExecuteQuery("SELECT CustId AS [Müşteri ID], CustName AS [Müşteri Adı], CustPhone AS [Telefon] FROM CustomerTable ORDER BY CustId DESC");
+                DataTable dt = DbHelper.ExecuteQuery("SELECT CustId AS [Müşteri ID], CustName AS [Müşteri Adı], CustPhone AS [Telefon] FROM CustomerTable ORDER BY CustId ASC");
                 dataGridViewCustomers.DataSource = dt;
             }
             catch (Exception ex)
@@ -45,7 +46,13 @@ namespace Inventory_Management_System
             txt_custid.Text = string.Empty;
             txt_custname.Text = string.Empty;
             txt_custphone.Text = string.Empty;
+            dataGridViewCustomers.ClearSelection();
             txt_custname.Focus();
+        }
+
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            ClearInputs();
         }
 
         private void btn_back_Click(object sender, EventArgs e)

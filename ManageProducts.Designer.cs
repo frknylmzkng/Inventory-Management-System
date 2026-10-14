@@ -36,6 +36,7 @@ namespace Inventory_Management_System
             this.btn_add = new System.Windows.Forms.Button();
             this.btn_edit = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
+            this.btn_clear = new System.Windows.Forms.Button();
             this.btn_home = new System.Windows.Forms.Button();
             this.dataGridViewProducts = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -241,17 +242,32 @@ namespace Inventory_Management_System
             this.btn_delete.UseVisualStyleBackColor = false;
             this.btn_delete.Click += new System.EventHandler(this.btn_delete_Click);
             // 
+            // 
+            // btn_clear
+            // 
+            this.btn_clear.BackColor = System.Drawing.Color.DarkOrange;
+            this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_clear.ForeColor = System.Drawing.Color.White;
+            this.btn_clear.Location = new System.Drawing.Point(33, 385);
+            this.btn_clear.Name = "btn_clear";
+            this.btn_clear.Size = new System.Drawing.Size(120, 30);
+            this.btn_clear.TabIndex = 21;
+            this.btn_clear.Text = "SEÇİMİ TEMİZLE";
+            this.btn_clear.UseVisualStyleBackColor = false;
+            this.btn_clear.Click += new System.EventHandler(this.btn_clear_Click);
+            // 
             // btn_home
             // 
             this.btn_home.BackColor = System.Drawing.Color.DarkTurquoise;
             this.btn_home.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_home.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_home.ForeColor = System.Drawing.Color.White;
-            this.btn_home.Location = new System.Drawing.Point(80, 385);
+            this.btn_home.Location = new System.Drawing.Point(162, 385);
             this.btn_home.Name = "btn_home";
-            this.btn_home.Size = new System.Drawing.Size(155, 30);
+            this.btn_home.Size = new System.Drawing.Size(120, 30);
             this.btn_home.TabIndex = 16;
-            this.btn_home.Text = "◀ GERİ (ANA MENÜ)";
+            this.btn_home.Text = "◀ ANA MENÜ";
             this.btn_home.UseVisualStyleBackColor = false;
             this.btn_home.Click += new System.EventHandler(this.btn_home_Click);
             // 
@@ -307,6 +323,7 @@ namespace Inventory_Management_System
             this.Controls.Add(this.cmb_searchcat);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.dataGridViewProducts);
+            this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.btn_home);
             this.Controls.Add(this.btn_delete);
             this.Controls.Add(this.btn_edit);
@@ -363,5 +380,6 @@ namespace Inventory_Management_System
         private System.Windows.Forms.ComboBox cmb_searchcat;
         private System.Windows.Forms.Button btn_refresh;
         private System.Windows.Forms.Button btn_back;
+        private System.Windows.Forms.Button btn_clear;
     }
 }

@@ -40,6 +40,7 @@ namespace Inventory_Management_System
             this.btn_home = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btn_clear_cart = new System.Windows.Forms.Button();
+            this.btn_clear = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCustomers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).BeginInit();
@@ -290,6 +291,20 @@ namespace Inventory_Management_System
             this.btn_clear_cart.UseVisualStyleBackColor = false;
             this.btn_clear_cart.Click += new System.EventHandler(this.btn_clear_cart_Click);
             // 
+            // btn_clear
+            // 
+            this.btn_clear.BackColor = System.Drawing.Color.DarkOrange;
+            this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_clear.ForeColor = System.Drawing.Color.White;
+            this.btn_clear.Location = new System.Drawing.Point(290, 280);
+            this.btn_clear.Name = "btn_clear";
+            this.btn_clear.Size = new System.Drawing.Size(130, 35);
+            this.btn_clear.TabIndex = 20;
+            this.btn_clear.Text = "SEÇİMİ TEMİZLE";
+            this.btn_clear.UseVisualStyleBackColor = false;
+            this.btn_clear.Click += new System.EventHandler(this.btn_clear_Click);
+            // 
             // ManageOrders
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -297,6 +312,7 @@ namespace Inventory_Management_System
             this.BackColor = System.Drawing.Color.AntiqueWhite;
             this.ClientSize = new System.Drawing.Size(980, 610);
             this.Controls.Add(this.btn_clear_cart);
+            this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.btn_home);
             this.Controls.Add(this.btn_insert_order);
@@ -355,6 +371,7 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Button btn_home;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btn_clear_cart;
+        private System.Windows.Forms.Button btn_clear;
         private System.Windows.Forms.Button btn_back;
     }
 }
