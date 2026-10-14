@@ -198,11 +198,11 @@ namespace Inventory_Management_System
             // 
             this.btn_clear.BackColor = System.Drawing.Color.DarkOrange;
             this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_clear.ForeColor = System.Drawing.Color.White;
-            this.btn_clear.Location = new System.Drawing.Point(40, 335);
+            this.btn_clear.Location = new System.Drawing.Point(44, 335);
             this.btn_clear.Name = "btn_clear";
-            this.btn_clear.Size = new System.Drawing.Size(120, 30);
+            this.btn_clear.Size = new System.Drawing.Size(237, 34);
             this.btn_clear.TabIndex = 17;
             this.btn_clear.Text = "SEÇİMİ TEMİZLE";
             this.btn_clear.UseVisualStyleBackColor = false;
@@ -212,11 +212,11 @@ namespace Inventory_Management_System
             // 
             this.button4.BackColor = System.Drawing.Color.DarkTurquoise;
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.button4.ForeColor = System.Drawing.Color.White;
-            this.button4.Location = new System.Drawing.Point(170, 335);
+            this.button4.Location = new System.Drawing.Point(44, 380);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(115, 30);
+            this.button4.Size = new System.Drawing.Size(237, 34);
             this.button4.TabIndex = 12;
             this.button4.Text = "◀ ANA MENÜ";
             this.button4.UseVisualStyleBackColor = false;

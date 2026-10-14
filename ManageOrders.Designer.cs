@@ -295,11 +295,11 @@ namespace Inventory_Management_System
             // 
             this.btn_clear.BackColor = System.Drawing.Color.DarkOrange;
             this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_clear.ForeColor = System.Drawing.Color.White;
-            this.btn_clear.Location = new System.Drawing.Point(290, 280);
+            this.btn_clear.Location = new System.Drawing.Point(285, 275);
             this.btn_clear.Name = "btn_clear";
-            this.btn_clear.Size = new System.Drawing.Size(130, 35);
+            this.btn_clear.Size = new System.Drawing.Size(185, 45);
             this.btn_clear.TabIndex = 20;
             this.btn_clear.Text = "SEÇİMİ TEMİZLE";
             this.btn_clear.UseVisualStyleBackColor = false;
