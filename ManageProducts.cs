@@ -8,16 +8,26 @@ namespace Inventory_Management_System
 {
     public partial class ManageProducts : Form
     {
-        public ManageProducts()
+        private bool initialFilterCritical = false;
+
+        public ManageProducts(bool filterCritical = false)
         {
             InitializeComponent();
+            this.initialFilterCritical = filterCritical;
         }
 
         private void ManageProducts_Load(object sender, EventArgs e)
         {
             FormatGrid();
             LoadCategories();
-            PopulateProducts();
+            if (initialFilterCritical)
+            {
+                chc_critical.Checked = true;
+            }
+            else
+            {
+                PopulateProducts();
+            }
             ClearInputs();
         }
 
@@ -63,31 +73,34 @@ namespace Inventory_Management_System
                 string query;
                 SqlParameter[] parameters = null;
 
-                if (string.IsNullOrEmpty(categoryFilter) || categoryFilter == "-- Tüm Kategoriler --")
+                bool onlyCritical = chc_critical.Checked;
+                bool hasCategory = !string.IsNullOrEmpty(categoryFilter) && categoryFilter != "-- Tüm Kategoriler --";
+
+                if (onlyCritical && hasCategory)
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat AND ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
+                    parameters = new SqlParameter[] { new SqlParameter("@cat", categoryFilter) };
+                }
+                else if (onlyCritical)
+                {
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
+                }
+                else if (hasCategory)
+                {
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat ORDER BY ProdId ASC";
+                    parameters = new SqlParameter[] { new SqlParameter("@cat", categoryFilter) };
                 }
                 else
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat ORDER BY ProdId ASC";
-                    parameters = new SqlParameter[] { new SqlParameter("@cat", categoryFilter) };
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC";
                 }
 
                 DataTable dt = DbHelper.ExecuteQuery(query, parameters);
                 dataGridViewProducts.DataSource = dt;
 
-                // Highlight low stock (Qty <= 5)
-                foreach (DataGridViewRow row in dataGridViewProducts.Rows)
+                if (dataGridViewProducts.Columns["Fiyat"] != null)
                 {
-                    if (row.Cells["Miktar"].Value != null)
-                    {
-                        int qty = Convert.ToInt32(row.Cells["Miktar"].Value);
-                        if (qty <= 5)
-                        {
-                            row.DefaultCellStyle.BackColor = Color.MistyRose;
-                            row.DefaultCellStyle.ForeColor = Color.DarkRed;
-                        }
-                    }
+                    dataGridViewProducts.Columns["Fiyat"].DefaultCellStyle.Format = "N2";
                 }
             }
             catch (Exception ex)
@@ -96,11 +109,47 @@ namespace Inventory_Management_System
             }
         }
 
+        private void chc_critical_CheckedChanged(object sender, EventArgs e)
+        {
+            string selectedCat = cmb_searchcat.SelectedItem?.ToString();
+            PopulateProducts(selectedCat);
+        }
+
+        private void dataGridViewProducts_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.RowIndex < dataGridViewProducts.Rows.Count)
+            {
+                DataGridViewRow row = dataGridViewProducts.Rows[e.RowIndex];
+                if (row.Cells["Miktar"]?.Value != null && row.Cells["Kritik Sınır"]?.Value != null)
+                {
+                    if (int.TryParse(row.Cells["Miktar"].Value.ToString(), out int qty) &&
+                        int.TryParse(row.Cells["Kritik Sınır"].Value.ToString(), out int minQty))
+                    {
+                        if (qty == 0)
+                        {
+                            row.DefaultCellStyle.BackColor = Color.MistyRose;
+                            row.DefaultCellStyle.ForeColor = Color.DarkRed;
+                            row.DefaultCellStyle.SelectionBackColor = Color.IndianRed;
+                            row.DefaultCellStyle.SelectionForeColor = Color.White;
+                        }
+                        else if (qty <= minQty)
+                        {
+                            row.DefaultCellStyle.BackColor = Color.LightGoldenrodYellow;
+                            row.DefaultCellStyle.ForeColor = Color.DarkOrange;
+                            row.DefaultCellStyle.SelectionBackColor = Color.Orange;
+                            row.DefaultCellStyle.SelectionForeColor = Color.White;
+                        }
+                    }
+                }
+            }
+        }
+
         private void ClearInputs()
         {
             txt_prodid.Text = string.Empty;
             txt_prodname.Text = string.Empty;
             txt_prodqty.Text = string.Empty;
+            txt_prodminqty.Text = "5";
             txt_prodprice.Text = string.Empty;
             txt_proddesc.Text = string.Empty;
             cmb_prodcat.SelectedIndex = -1;
@@ -156,13 +205,20 @@ namespace Inventory_Management_System
                 return;
             }
 
+            int minQty = 5;
+            if (!string.IsNullOrWhiteSpace(txt_prodminqty.Text))
+            {
+                int.TryParse(txt_prodminqty.Text.Trim(), out minQty);
+            }
+
             try
             {
-                string query = "INSERT INTO ProductTable (ProdName, ProdQty, ProdPrice, ProdDesc, ProdCat) VALUES (@name, @qty, @price, @desc, @cat)";
+                string query = "INSERT INTO ProductTable (ProdName, ProdQty, ProdMinQty, ProdPrice, ProdDesc, ProdCat) VALUES (@name, @qty, @minqty, @price, @desc, @cat)";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@name", txt_prodname.Text.Trim()),
                     new SqlParameter("@qty", qty),
+                    new SqlParameter("@minqty", minQty),
                     new SqlParameter("@price", price),
                     new SqlParameter("@desc", txt_proddesc.Text.Trim()),
                     new SqlParameter("@cat", cmb_prodcat.SelectedItem.ToString())
@@ -205,13 +261,20 @@ namespace Inventory_Management_System
                 return;
             }
 
+            int minQty = 5;
+            if (!string.IsNullOrWhiteSpace(txt_prodminqty.Text))
+            {
+                int.TryParse(txt_prodminqty.Text.Trim(), out minQty);
+            }
+
             try
             {
-                string query = "UPDATE ProductTable SET ProdName = @name, ProdQty = @qty, ProdPrice = @price, ProdDesc = @desc, ProdCat = @cat WHERE ProdId = @id";
+                string query = "UPDATE ProductTable SET ProdName = @name, ProdQty = @qty, ProdMinQty = @minqty, ProdPrice = @price, ProdDesc = @desc, ProdCat = @cat WHERE ProdId = @id";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@name", txt_prodname.Text.Trim()),
                     new SqlParameter("@qty", qty),
+                    new SqlParameter("@minqty", minQty),
                     new SqlParameter("@price", price),
                     new SqlParameter("@desc", txt_proddesc.Text.Trim()),
                     new SqlParameter("@cat", cmb_prodcat.SelectedItem.ToString()),
@@ -273,9 +336,10 @@ namespace Inventory_Management_System
                 txt_prodid.Text = row.Cells[0].Value?.ToString() ?? "";
                 txt_prodname.Text = row.Cells[1].Value?.ToString() ?? "";
                 txt_prodqty.Text = row.Cells[2].Value?.ToString() ?? "";
-                txt_prodprice.Text = row.Cells[3].Value?.ToString() ?? "";
-                txt_proddesc.Text = row.Cells[4].Value?.ToString() ?? "";
-                string cat = row.Cells[5].Value?.ToString() ?? "";
+                txt_prodminqty.Text = row.Cells[3].Value?.ToString() ?? "5";
+                txt_prodprice.Text = row.Cells[4].Value?.ToString() ?? "";
+                txt_proddesc.Text = row.Cells[5].Value?.ToString() ?? "";
+                string cat = row.Cells[6].Value?.ToString() ?? "";
                 if (cmb_prodcat.Items.Contains(cat))
                     cmb_prodcat.SelectedItem = cat;
                 else
@@ -291,6 +355,7 @@ namespace Inventory_Management_System
 
         private void btn_refresh_Click(object sender, EventArgs e)
         {
+            chc_critical.Checked = false;
             cmb_searchcat.SelectedIndex = 0;
             PopulateProducts();
             ClearInputs();

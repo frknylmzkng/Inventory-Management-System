@@ -40,11 +40,15 @@ namespace Inventory_Management_System
             this.panelCardOrders = new System.Windows.Forms.Panel();
             this.lblCountOrders = new System.Windows.Forms.Label();
             this.lblCardOrdersTitle = new System.Windows.Forms.Label();
+            this.panelCardCritical = new System.Windows.Forms.Panel();
+            this.lblCountCritical = new System.Windows.Forms.Label();
+            this.lblCardCriticalTitle = new System.Windows.Forms.Label();
             this.panelTop.SuspendLayout();
             this.panelCardUsers.SuspendLayout();
             this.panelCardProducts.SuspendLayout();
             this.panelCardCategories.SuspendLayout();
             this.panelCardOrders.SuspendLayout();
+            this.panelCardCritical.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelTop
@@ -111,9 +115,9 @@ namespace Inventory_Management_System
             this.panelCardProducts.Controls.Add(this.lblCountProducts);
             this.panelCardProducts.Controls.Add(this.lblCardProductsTitle);
             this.panelCardProducts.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.panelCardProducts.Location = new System.Drawing.Point(60, 130);
+            this.panelCardProducts.Location = new System.Drawing.Point(25, 130);
             this.panelCardProducts.Name = "panelCardProducts";
-            this.panelCardProducts.Size = new System.Drawing.Size(160, 100);
+            this.panelCardProducts.Size = new System.Drawing.Size(150, 100);
             this.panelCardProducts.TabIndex = 2;
             this.panelCardProducts.Click += new System.EventHandler(this.panelCardProducts_Click);
             // 
@@ -122,7 +126,7 @@ namespace Inventory_Management_System
             this.lblCountProducts.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblCountProducts.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblCountProducts.ForeColor = System.Drawing.Color.White;
-            this.lblCountProducts.Location = new System.Drawing.Point(10, 45);
+            this.lblCountProducts.Location = new System.Drawing.Point(5, 45);
             this.lblCountProducts.Name = "lblCountProducts";
             this.lblCountProducts.Size = new System.Drawing.Size(140, 40);
             this.lblCountProducts.TabIndex = 1;
@@ -133,9 +137,9 @@ namespace Inventory_Management_System
             // lblCardProductsTitle
             // 
             this.lblCardProductsTitle.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblCardProductsTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblCardProductsTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblCardProductsTitle.ForeColor = System.Drawing.Color.White;
-            this.lblCardProductsTitle.Location = new System.Drawing.Point(10, 12);
+            this.lblCardProductsTitle.Location = new System.Drawing.Point(5, 12);
             this.lblCardProductsTitle.Name = "lblCardProductsTitle";
             this.lblCardProductsTitle.Size = new System.Drawing.Size(140, 25);
             this.lblCardProductsTitle.TabIndex = 0;
@@ -149,9 +153,9 @@ namespace Inventory_Management_System
             this.panelCardCategories.Controls.Add(this.lblCountCategories);
             this.panelCardCategories.Controls.Add(this.lblCardCategoriesTitle);
             this.panelCardCategories.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.panelCardCategories.Location = new System.Drawing.Point(260, 130);
+            this.panelCardCategories.Location = new System.Drawing.Point(195, 130);
             this.panelCardCategories.Name = "panelCardCategories";
-            this.panelCardCategories.Size = new System.Drawing.Size(160, 100);
+            this.panelCardCategories.Size = new System.Drawing.Size(150, 100);
             this.panelCardCategories.TabIndex = 3;
             this.panelCardCategories.Click += new System.EventHandler(this.panelCardCategories_Click);
             // 
@@ -160,7 +164,7 @@ namespace Inventory_Management_System
             this.lblCountCategories.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblCountCategories.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblCountCategories.ForeColor = System.Drawing.Color.White;
-            this.lblCountCategories.Location = new System.Drawing.Point(10, 45);
+            this.lblCountCategories.Location = new System.Drawing.Point(5, 45);
             this.lblCountCategories.Name = "lblCountCategories";
             this.lblCountCategories.Size = new System.Drawing.Size(140, 40);
             this.lblCountCategories.TabIndex = 1;
@@ -171,9 +175,9 @@ namespace Inventory_Management_System
             // lblCardCategoriesTitle
             // 
             this.lblCardCategoriesTitle.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblCardCategoriesTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblCardCategoriesTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblCardCategoriesTitle.ForeColor = System.Drawing.Color.White;
-            this.lblCardCategoriesTitle.Location = new System.Drawing.Point(10, 12);
+            this.lblCardCategoriesTitle.Location = new System.Drawing.Point(5, 12);
             this.lblCardCategoriesTitle.Name = "lblCardCategoriesTitle";
             this.lblCardCategoriesTitle.Size = new System.Drawing.Size(140, 25);
             this.lblCardCategoriesTitle.TabIndex = 0;
@@ -187,9 +191,9 @@ namespace Inventory_Management_System
             this.panelCardUsers.Controls.Add(this.lblCountUsers);
             this.panelCardUsers.Controls.Add(this.lblCardUsersTitle);
             this.panelCardUsers.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.panelCardUsers.Location = new System.Drawing.Point(460, 130);
+            this.panelCardUsers.Location = new System.Drawing.Point(365, 130);
             this.panelCardUsers.Name = "panelCardUsers";
-            this.panelCardUsers.Size = new System.Drawing.Size(160, 100);
+            this.panelCardUsers.Size = new System.Drawing.Size(150, 100);
             this.panelCardUsers.TabIndex = 4;
             this.panelCardUsers.Click += new System.EventHandler(this.panelCardUsers_Click);
             // 
@@ -198,7 +202,7 @@ namespace Inventory_Management_System
             this.lblCountUsers.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblCountUsers.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblCountUsers.ForeColor = System.Drawing.Color.White;
-            this.lblCountUsers.Location = new System.Drawing.Point(10, 45);
+            this.lblCountUsers.Location = new System.Drawing.Point(5, 45);
             this.lblCountUsers.Name = "lblCountUsers";
             this.lblCountUsers.Size = new System.Drawing.Size(140, 40);
             this.lblCountUsers.TabIndex = 1;
@@ -209,9 +213,9 @@ namespace Inventory_Management_System
             // lblCardUsersTitle
             // 
             this.lblCardUsersTitle.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblCardUsersTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblCardUsersTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblCardUsersTitle.ForeColor = System.Drawing.Color.White;
-            this.lblCardUsersTitle.Location = new System.Drawing.Point(10, 12);
+            this.lblCardUsersTitle.Location = new System.Drawing.Point(5, 12);
             this.lblCardUsersTitle.Name = "lblCardUsersTitle";
             this.lblCardUsersTitle.Size = new System.Drawing.Size(140, 25);
             this.lblCardUsersTitle.TabIndex = 0;
@@ -225,9 +229,9 @@ namespace Inventory_Management_System
             this.panelCardOrders.Controls.Add(this.lblCountOrders);
             this.panelCardOrders.Controls.Add(this.lblCardOrdersTitle);
             this.panelCardOrders.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.panelCardOrders.Location = new System.Drawing.Point(660, 130);
+            this.panelCardOrders.Location = new System.Drawing.Point(535, 130);
             this.panelCardOrders.Name = "panelCardOrders";
-            this.panelCardOrders.Size = new System.Drawing.Size(160, 100);
+            this.panelCardOrders.Size = new System.Drawing.Size(150, 100);
             this.panelCardOrders.TabIndex = 5;
             this.panelCardOrders.Click += new System.EventHandler(this.panelCardOrders_Click);
             // 
@@ -236,7 +240,7 @@ namespace Inventory_Management_System
             this.lblCountOrders.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblCountOrders.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblCountOrders.ForeColor = System.Drawing.Color.White;
-            this.lblCountOrders.Location = new System.Drawing.Point(10, 45);
+            this.lblCountOrders.Location = new System.Drawing.Point(5, 45);
             this.lblCountOrders.Name = "lblCountOrders";
             this.lblCountOrders.Size = new System.Drawing.Size(140, 40);
             this.lblCountOrders.TabIndex = 1;
@@ -247,15 +251,53 @@ namespace Inventory_Management_System
             // lblCardOrdersTitle
             // 
             this.lblCardOrdersTitle.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblCardOrdersTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblCardOrdersTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblCardOrdersTitle.ForeColor = System.Drawing.Color.White;
-            this.lblCardOrdersTitle.Location = new System.Drawing.Point(10, 12);
+            this.lblCardOrdersTitle.Location = new System.Drawing.Point(5, 12);
             this.lblCardOrdersTitle.Name = "lblCardOrdersTitle";
             this.lblCardOrdersTitle.Size = new System.Drawing.Size(140, 25);
             this.lblCardOrdersTitle.TabIndex = 0;
             this.lblCardOrdersTitle.Text = "SİPARİŞLER";
             this.lblCardOrdersTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblCardOrdersTitle.Click += new System.EventHandler(this.panelCardOrders_Click);
+            // 
+            // panelCardCritical
+            // 
+            this.panelCardCritical.BackColor = System.Drawing.Color.Crimson;
+            this.panelCardCritical.Controls.Add(this.lblCountCritical);
+            this.panelCardCritical.Controls.Add(this.lblCardCriticalTitle);
+            this.panelCardCritical.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.panelCardCritical.Location = new System.Drawing.Point(705, 130);
+            this.panelCardCritical.Name = "panelCardCritical";
+            this.panelCardCritical.Size = new System.Drawing.Size(150, 100);
+            this.panelCardCritical.TabIndex = 6;
+            this.panelCardCritical.Click += new System.EventHandler(this.panelCardCritical_Click);
+            // 
+            // lblCountCritical
+            // 
+            this.lblCountCritical.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblCountCritical.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblCountCritical.ForeColor = System.Drawing.Color.White;
+            this.lblCountCritical.Location = new System.Drawing.Point(5, 45);
+            this.lblCountCritical.Name = "lblCountCritical";
+            this.lblCountCritical.Size = new System.Drawing.Size(140, 40);
+            this.lblCountCritical.TabIndex = 1;
+            this.lblCountCritical.Text = "0";
+            this.lblCountCritical.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblCountCritical.Click += new System.EventHandler(this.panelCardCritical_Click);
+            // 
+            // lblCardCriticalTitle
+            // 
+            this.lblCardCriticalTitle.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblCardCriticalTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblCardCriticalTitle.ForeColor = System.Drawing.Color.White;
+            this.lblCardCriticalTitle.Location = new System.Drawing.Point(5, 12);
+            this.lblCardCriticalTitle.Name = "lblCardCriticalTitle";
+            this.lblCardCriticalTitle.Size = new System.Drawing.Size(140, 25);
+            this.lblCardCriticalTitle.TabIndex = 0;
+            this.lblCardCriticalTitle.Text = "KRİTİK STOK";
+            this.lblCardCriticalTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblCardCriticalTitle.Click += new System.EventHandler(this.panelCardCritical_Click);
             // 
             // btnProducts
             // 
@@ -353,6 +395,7 @@ namespace Inventory_Management_System
             this.Controls.Add(this.btnUsers);
             this.Controls.Add(this.btnCategories);
             this.Controls.Add(this.btnProducts);
+            this.Controls.Add(this.panelCardCritical);
             this.Controls.Add(this.panelCardOrders);
             this.Controls.Add(this.panelCardUsers);
             this.Controls.Add(this.panelCardCategories);
@@ -371,6 +414,7 @@ namespace Inventory_Management_System
             this.panelCardProducts.ResumeLayout(false);
             this.panelCardCategories.ResumeLayout(false);
             this.panelCardOrders.ResumeLayout(false);
+            this.panelCardCritical.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -400,5 +444,8 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Panel panelCardOrders;
         private System.Windows.Forms.Label lblCountOrders;
         private System.Windows.Forms.Label lblCardOrdersTitle;
+        private System.Windows.Forms.Panel panelCardCritical;
+        private System.Windows.Forms.Label lblCountCritical;
+        private System.Windows.Forms.Label lblCardCriticalTitle;
     }
 }

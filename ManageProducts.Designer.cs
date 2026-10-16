@@ -42,6 +42,9 @@ namespace Inventory_Management_System
             this.panel2 = new System.Windows.Forms.Panel();
             this.cmb_searchcat = new System.Windows.Forms.ComboBox();
             this.btn_refresh = new System.Windows.Forms.Button();
+            this.lbl_prodminqty = new System.Windows.Forms.Label();
+            this.txt_prodminqty = new System.Windows.Forms.TextBox();
+            this.chc_critical = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).BeginInit();
             this.SuspendLayout();
@@ -114,8 +117,26 @@ namespace Inventory_Management_System
             // 
             this.txt_prodqty.Location = new System.Drawing.Point(140, 190);
             this.txt_prodqty.Name = "txt_prodqty";
-            this.txt_prodqty.Size = new System.Drawing.Size(150, 20);
+            this.txt_prodqty.Size = new System.Drawing.Size(55, 20);
             this.txt_prodqty.TabIndex = 3;
+            // 
+            // lbl_prodminqty
+            // 
+            this.lbl_prodminqty.AutoSize = true;
+            this.lbl_prodminqty.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lbl_prodminqty.Location = new System.Drawing.Point(202, 193);
+            this.lbl_prodminqty.Name = "lbl_prodminqty";
+            this.lbl_prodminqty.Size = new System.Drawing.Size(74, 13);
+            this.lbl_prodminqty.TabIndex = 22;
+            this.lbl_prodminqty.Text = "Kritik Sınır:";
+            // 
+            // txt_prodminqty
+            // 
+            this.txt_prodminqty.Location = new System.Drawing.Point(280, 190);
+            this.txt_prodminqty.Name = "txt_prodminqty";
+            this.txt_prodminqty.Size = new System.Drawing.Size(40, 20);
+            this.txt_prodminqty.TabIndex = 4;
+            this.txt_prodminqty.Text = "5";
             // 
             // txt_prodprice
             // 
@@ -279,6 +300,7 @@ namespace Inventory_Management_System
             this.dataGridViewProducts.Size = new System.Drawing.Size(575, 360);
             this.dataGridViewProducts.TabIndex = 17;
             this.dataGridViewProducts.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewProducts_CellClick);
+            this.dataGridViewProducts.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridViewProducts_CellFormatting);
             // 
             // panel2
             // 
@@ -313,12 +335,29 @@ namespace Inventory_Management_System
             this.btn_refresh.UseVisualStyleBackColor = false;
             this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
             // 
+            // chc_critical
+            // 
+            this.chc_critical.AutoSize = true;
+            this.chc_critical.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chc_critical.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.chc_critical.ForeColor = System.Drawing.Color.Crimson;
+            this.chc_critical.Location = new System.Drawing.Point(615, 121);
+            this.chc_critical.Name = "chc_critical";
+            this.chc_critical.Size = new System.Drawing.Size(225, 19);
+            this.chc_critical.TabIndex = 23;
+            this.chc_critical.Text = "⚠️ Sadece Kritik Stokları Göster";
+            this.chc_critical.UseVisualStyleBackColor = true;
+            this.chc_critical.CheckedChanged += new System.EventHandler(this.chc_critical_CheckedChanged);
+            // 
             // ManageProducts
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AntiqueWhite;
             this.ClientSize = new System.Drawing.Size(920, 570);
+            this.Controls.Add(this.chc_critical);
+            this.Controls.Add(this.lbl_prodminqty);
+            this.Controls.Add(this.txt_prodminqty);
             this.Controls.Add(this.btn_refresh);
             this.Controls.Add(this.cmb_searchcat);
             this.Controls.Add(this.panel2);
@@ -381,5 +420,8 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Button btn_refresh;
         private System.Windows.Forms.Button btn_back;
         private System.Windows.Forms.Button btn_clear;
+        private System.Windows.Forms.TextBox txt_prodminqty;
+        private System.Windows.Forms.Label lbl_prodminqty;
+        private System.Windows.Forms.CheckBox chc_critical;
     }
 }

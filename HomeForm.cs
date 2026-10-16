@@ -35,6 +35,9 @@ namespace Inventory_Management_System
 
                 object orderCount = DbHelper.ExecuteScalar("SELECT COUNT(*) FROM OrderTable");
                 lblCountOrders.Text = orderCount?.ToString() ?? "0";
+
+                object critCount = DbHelper.ExecuteScalar("SELECT COUNT(*) FROM ProductTable WHERE ProdQty <= ProdMinQty");
+                lblCountCritical.Text = critCount?.ToString() ?? "0";
             }
             catch (Exception ex)
             {
@@ -108,6 +111,13 @@ namespace Inventory_Management_System
         {
             ViewOrders orders = new ViewOrders();
             orders.Show();
+            this.Hide();
+        }
+
+        private void panelCardCritical_Click(object sender, EventArgs e)
+        {
+            ManageProducts products = new ManageProducts(true);
+            products.Show();
             this.Hide();
         }
     }
