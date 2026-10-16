@@ -9,6 +9,7 @@ namespace Inventory_Management_System
     {
         private DataTable cartTable;
         private int selectedProdId = 0;
+        private string selectedProdBarcode = "";
         private string selectedProdName = "";
         private decimal selectedProdPrice = 0;
         private int selectedProdStock = 0;
@@ -33,6 +34,7 @@ namespace Inventory_Management_System
         {
             cartTable = new DataTable();
             cartTable.Columns.Add("Ürün ID", typeof(int));
+            cartTable.Columns.Add("Barkod", typeof(string));
             cartTable.Columns.Add("Ürün Adı", typeof(string));
             cartTable.Columns.Add("Miktar", typeof(int));
             cartTable.Columns.Add("Birim Fiyat", typeof(decimal));
@@ -87,7 +89,7 @@ namespace Inventory_Management_System
         {
             try
             {
-                DataTable dt = DbHelper.ExecuteQuery("SELECT ProdId AS [ID], ProdName AS [Ürün Adı], ProdQty AS [Stok], ProdPrice AS [Fiyat], ProdCostPrice AS [Maliyet], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC");
+                DataTable dt = DbHelper.ExecuteQuery("SELECT ProdId AS [ID], ProdBarcode AS [Barkod], ProdName AS [Ürün Adı], ProdQty AS [Stok], ProdPrice AS [Fiyat], ProdCostPrice AS [Maliyet], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC");
                 dataGridViewProducts.DataSource = dt;
                 if (dataGridViewProducts.Columns.Contains("Maliyet"))
                     dataGridViewProducts.Columns["Maliyet"].Visible = false;
@@ -106,6 +108,7 @@ namespace Inventory_Management_System
             txt_custname.Text = string.Empty;
             txt_qty.Text = string.Empty;
             selectedProdId = 0;
+            selectedProdBarcode = "";
             selectedProdName = "";
             selectedProdPrice = 0;
             selectedProdStock = 0;
@@ -135,10 +138,11 @@ namespace Inventory_Management_System
             {
                 DataGridViewRow row = dataGridViewProducts.Rows[e.RowIndex];
                 selectedProdId = Convert.ToInt32(row.Cells[0].Value);
-                selectedProdName = row.Cells[1].Value?.ToString() ?? "";
-                selectedProdStock = Convert.ToInt32(row.Cells[2].Value);
-                selectedProdPrice = Convert.ToDecimal(row.Cells[3].Value);
-                selectedProdCost = row.Cells[4].Value != DBNull.Value ? Convert.ToDecimal(row.Cells[4].Value) : 0m;
+                selectedProdBarcode = row.Cells[1].Value?.ToString() ?? "";
+                selectedProdName = row.Cells[2].Value?.ToString() ?? "";
+                selectedProdStock = Convert.ToInt32(row.Cells[3].Value);
+                selectedProdPrice = Convert.ToDecimal(row.Cells[4].Value);
+                selectedProdCost = row.Cells[5].Value != DBNull.Value ? Convert.ToDecimal(row.Cells[5].Value) : 0m;
                 txt_qty.Focus();
             }
         }
@@ -185,11 +189,112 @@ namespace Inventory_Management_System
             if (!alreadyInCart)
             {
                 decimal total = qty * selectedProdPrice;
-                cartTable.Rows.Add(selectedProdId, selectedProdName, qty, selectedProdPrice, total, selectedProdCost);
+                cartTable.Rows.Add(selectedProdId, selectedProdBarcode, selectedProdName, qty, selectedProdPrice, total, selectedProdCost);
             }
 
             CalculateTotal();
             txt_qty.Text = string.Empty;
+        }
+
+        private void AddProductByBarcode(string barcodeText)
+        {
+            if (string.IsNullOrWhiteSpace(barcodeText))
+                return;
+
+            barcodeText = barcodeText.Trim();
+            try
+            {
+                string query = "SELECT ProdId, ProdBarcode, ProdName, ProdQty, ProdPrice, ProdCostPrice FROM ProductTable WHERE ProdBarcode = @code OR CAST(ProdId AS NVARCHAR) = @code";
+                DataTable dt = DbHelper.ExecuteQuery(query, new SqlParameter[] { new SqlParameter("@code", barcodeText) });
+
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    System.Media.SystemSounds.Beep.Play();
+                    MessageBox.Show($"'{barcodeText}' barkodlu/kodlu ürün sistemde bulunamadı!", "Ürün Bulunamadı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txt_barcode.SelectAll();
+                    txt_barcode.Focus();
+                    return;
+                }
+
+                DataRow row = dt.Rows[0];
+                int prodId = Convert.ToInt32(row["ProdId"]);
+                string barcode = row["ProdBarcode"]?.ToString() ?? "";
+                string prodName = row["ProdName"]?.ToString() ?? "";
+                int stock = Convert.ToInt32(row["ProdQty"]);
+                decimal price = Convert.ToDecimal(row["ProdPrice"]);
+                decimal cost = (row["ProdCostPrice"] != DBNull.Value) ? Convert.ToDecimal(row["ProdCostPrice"]) : 0m;
+
+                if (stock <= 0)
+                {
+                    System.Media.SystemSounds.Beep.Play();
+                    MessageBox.Show($"'{prodName}' ürününün stoğu tükenmiştir! (Mevcut Stok: 0)", "Stok Yetersiz", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txt_barcode.SelectAll();
+                    txt_barcode.Focus();
+                    return;
+                }
+
+                // Check if already in cart
+                bool alreadyInCart = false;
+                foreach (DataRow cartRow in cartTable.Rows)
+                {
+                    if (Convert.ToInt32(cartRow["Ürün ID"]) == prodId)
+                    {
+                        int currentQty = Convert.ToInt32(cartRow["Miktar"]);
+                        if (currentQty + 1 > stock)
+                        {
+                            System.Media.SystemSounds.Beep.Play();
+                            MessageBox.Show($"'{prodName}' için sepetteki adet mevcut stoku ({stock}) aşıyor!", "Stok Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            txt_barcode.SelectAll();
+                            txt_barcode.Focus();
+                            return;
+                        }
+                        cartRow["Miktar"] = currentQty + 1;
+                        cartRow["Toplam"] = (currentQty + 1) * price;
+                        alreadyInCart = true;
+                        break;
+                    }
+                }
+
+                if (!alreadyInCart)
+                {
+                    cartTable.Rows.Add(prodId, barcode, prodName, 1, price, price, cost);
+                }
+
+                CalculateTotal();
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Select row in dataGridViewProducts if visible
+                foreach (DataGridViewRow dgvRow in dataGridViewProducts.Rows)
+                {
+                    if (Convert.ToInt32(dgvRow.Cells[0].Value) == prodId)
+                    {
+                        dgvRow.Selected = true;
+                        dataGridViewProducts.FirstDisplayedScrollingRowIndex = dgvRow.Index;
+                        break;
+                    }
+                }
+
+                txt_barcode.Clear();
+                txt_barcode.Focus();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Barkod ile ürün eklenirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void txt_barcode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                AddProductByBarcode(txt_barcode.Text);
+            }
+        }
+
+        private void btn_barcode_add_Click(object sender, EventArgs e)
+        {
+            AddProductByBarcode(txt_barcode.Text);
         }
 
         private void CalculateTotal()
@@ -246,17 +351,19 @@ namespace Inventory_Management_System
                         foreach (DataRow row in cartTable.Rows)
                         {
                             int prodId = Convert.ToInt32(row["Ürün ID"]);
+                            string barcode = (row.Table.Columns.Contains("Barkod") && row["Barkod"] != DBNull.Value) ? row["Barkod"].ToString() : "";
                             string prodName = row["Ürün Adı"].ToString();
                             int qty = Convert.ToInt32(row["Miktar"]);
                             decimal price = Convert.ToDecimal(row["Birim Fiyat"]);
                             decimal total = Convert.ToDecimal(row["Toplam"]);
                             decimal cost = (row.Table.Columns.Contains("Maliyet") && row["Maliyet"] != DBNull.Value) ? Convert.ToDecimal(row["Maliyet"]) : 0m;
 
-                            string detailQuery = "INSERT INTO OrderDetailTable (OrderId, ProdId, ProdName, Qty, Price, Total, CostPrice) VALUES (@orderid, @prodid, @prodname, @qty, @price, @total, @cost)";
+                            string detailQuery = "INSERT INTO OrderDetailTable (OrderId, ProdId, ProdBarcode, ProdName, Qty, Price, Total, CostPrice) VALUES (@orderid, @prodid, @barcode, @prodname, @qty, @price, @total, @cost)";
                             using (SqlCommand cmd = new SqlCommand(detailQuery, conn, trans))
                             {
                                 cmd.Parameters.AddWithValue("@orderid", orderId);
                                 cmd.Parameters.AddWithValue("@prodid", prodId);
+                                cmd.Parameters.AddWithValue("@barcode", barcode);
                                 cmd.Parameters.AddWithValue("@prodname", prodName);
                                 cmd.Parameters.AddWithValue("@qty", qty);
                                 cmd.Parameters.AddWithValue("@price", price);

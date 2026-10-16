@@ -64,7 +64,7 @@ namespace Inventory_Management_System
         {
             try
             {
-                string query = "SELECT ProdName AS [Ürün Adı], Qty AS [Adet], CostPrice AS [Birim Maliyet (TL)], Price AS [Satış Fiyatı (TL)], Total AS [Toplam Tutar (TL)], ((Price - CostPrice) * Qty) AS [Net Kâr (TL)] FROM OrderDetailTable WHERE OrderId = @orderid ORDER BY DetailId ASC";
+                string query = "SELECT ProdBarcode AS [Barkod], ProdName AS [Ürün Adı], Qty AS [Adet], CostPrice AS [Birim Maliyet (TL)], Price AS [Satış Fiyatı (TL)], Total AS [Toplam Tutar (TL)], ((Price - CostPrice) * Qty) AS [Net Kâr (TL)] FROM OrderDetailTable WHERE OrderId = @orderid ORDER BY DetailId ASC";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@orderid", orderId)

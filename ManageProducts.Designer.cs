@@ -48,6 +48,9 @@ namespace Inventory_Management_System
             this.btn_export = new System.Windows.Forms.Button();
             this.lbl_prodcost = new System.Windows.Forms.Label();
             this.txt_prodcost = new System.Windows.Forms.TextBox();
+            this.lbl_prodbarcode = new System.Windows.Forms.Label();
+            this.txt_prodbarcode = new System.Windows.Forms.TextBox();
+            this.btn_gen_barcode = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).BeginInit();
             this.SuspendLayout();
@@ -103,11 +106,42 @@ namespace Inventory_Management_System
             // 
             // txt_prodid
             // 
-            this.txt_prodid.Location = new System.Drawing.Point(140, 120);
+            this.txt_prodid.Location = new System.Drawing.Point(95, 120);
             this.txt_prodid.Name = "txt_prodid";
             this.txt_prodid.ReadOnly = true;
-            this.txt_prodid.Size = new System.Drawing.Size(150, 20);
+            this.txt_prodid.Size = new System.Drawing.Size(40, 20);
             this.txt_prodid.TabIndex = 1;
+            // 
+            // lbl_prodbarcode
+            // 
+            this.lbl_prodbarcode.AutoSize = true;
+            this.lbl_prodbarcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lbl_prodbarcode.Location = new System.Drawing.Point(140, 123);
+            this.lbl_prodbarcode.Name = "lbl_prodbarcode";
+            this.lbl_prodbarcode.Size = new System.Drawing.Size(51, 13);
+            this.lbl_prodbarcode.TabIndex = 26;
+            this.lbl_prodbarcode.Text = "Barkod:";
+            // 
+            // txt_prodbarcode
+            // 
+            this.txt_prodbarcode.Location = new System.Drawing.Point(195, 120);
+            this.txt_prodbarcode.Name = "txt_prodbarcode";
+            this.txt_prodbarcode.Size = new System.Drawing.Size(85, 20);
+            this.txt_prodbarcode.TabIndex = 2;
+            // 
+            // btn_gen_barcode
+            // 
+            this.btn_gen_barcode.BackColor = System.Drawing.Color.SteelBlue;
+            this.btn_gen_barcode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_gen_barcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_gen_barcode.ForeColor = System.Drawing.Color.White;
+            this.btn_gen_barcode.Location = new System.Drawing.Point(283, 118);
+            this.btn_gen_barcode.Name = "btn_gen_barcode";
+            this.btn_gen_barcode.Size = new System.Drawing.Size(32, 23);
+            this.btn_gen_barcode.TabIndex = 27;
+            this.btn_gen_barcode.Text = "🎲";
+            this.btn_gen_barcode.UseVisualStyleBackColor = false;
+            this.btn_gen_barcode.Click += new System.EventHandler(this.btn_gen_barcode_Click);
             // 
             // txt_prodname
             // 
@@ -389,6 +423,9 @@ namespace Inventory_Management_System
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AntiqueWhite;
             this.ClientSize = new System.Drawing.Size(920, 570);
+            this.Controls.Add(this.btn_gen_barcode);
+            this.Controls.Add(this.txt_prodbarcode);
+            this.Controls.Add(this.lbl_prodbarcode);
             this.Controls.Add(this.btn_export);
             this.Controls.Add(this.chc_critical);
             this.Controls.Add(this.lbl_prodminqty);
@@ -435,6 +472,9 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txt_prodid;
+        private System.Windows.Forms.Label lbl_prodbarcode;
+        private System.Windows.Forms.TextBox txt_prodbarcode;
+        private System.Windows.Forms.Button btn_gen_barcode;
         private System.Windows.Forms.TextBox txt_prodname;
         private System.Windows.Forms.TextBox txt_prodqty;
         private System.Windows.Forms.TextBox txt_prodprice;

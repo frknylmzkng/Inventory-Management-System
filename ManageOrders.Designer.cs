@@ -42,6 +42,9 @@ namespace Inventory_Management_System
             this.btn_clear_cart = new System.Windows.Forms.Button();
             this.btn_clear = new System.Windows.Forms.Button();
             this.btn_view_orders = new System.Windows.Forms.Button();
+            this.lbl_barcode = new System.Windows.Forms.Label();
+            this.txt_barcode = new System.Windows.Forms.TextBox();
+            this.btn_barcode_add = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCustomers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).BeginInit();
@@ -157,6 +160,40 @@ namespace Inventory_Management_System
             this.label3.Size = new System.Drawing.Size(104, 18);
             this.label3.TabIndex = 5;
             this.label3.Text = "Ürün Seçiniz";
+            // 
+            // lbl_barcode
+            // 
+            this.lbl_barcode.AutoSize = true;
+            this.lbl_barcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lbl_barcode.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.lbl_barcode.Location = new System.Drawing.Point(615, 93);
+            this.lbl_barcode.Name = "lbl_barcode";
+            this.lbl_barcode.Size = new System.Drawing.Size(107, 13);
+            this.lbl_barcode.TabIndex = 22;
+            this.lbl_barcode.Text = "⚡ Barkod (Enter):";
+            // 
+            // txt_barcode
+            // 
+            this.txt_barcode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.txt_barcode.Location = new System.Drawing.Point(728, 89);
+            this.txt_barcode.Name = "txt_barcode";
+            this.txt_barcode.Size = new System.Drawing.Size(135, 21);
+            this.txt_barcode.TabIndex = 23;
+            this.txt_barcode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_barcode_KeyDown);
+            // 
+            // btn_barcode_add
+            // 
+            this.btn_barcode_add.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btn_barcode_add.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_barcode_add.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_barcode_add.ForeColor = System.Drawing.Color.White;
+            this.btn_barcode_add.Location = new System.Drawing.Point(868, 87);
+            this.btn_barcode_add.Name = "btn_barcode_add";
+            this.btn_barcode_add.Size = new System.Drawing.Size(92, 25);
+            this.btn_barcode_add.TabIndex = 24;
+            this.btn_barcode_add.Text = "+ Sepete Ekle";
+            this.btn_barcode_add.UseVisualStyleBackColor = false;
+            this.btn_barcode_add.Click += new System.EventHandler(this.btn_barcode_add_Click);
             // 
             // label4
             // 
@@ -326,7 +363,9 @@ namespace Inventory_Management_System
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AntiqueWhite;
-            this.ClientSize = new System.Drawing.Size(980, 610);
+            this.Controls.Add(this.btn_barcode_add);
+            this.Controls.Add(this.txt_barcode);
+            this.Controls.Add(this.lbl_barcode);
             this.Controls.Add(this.btn_clear_cart);
             this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.panel2);
@@ -373,6 +412,9 @@ namespace Inventory_Management_System
         private System.Windows.Forms.DataGridView dataGridViewCart;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lbl_barcode;
+        private System.Windows.Forms.TextBox txt_barcode;
+        private System.Windows.Forms.Button btn_barcode_add;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txt_custid;
         private System.Windows.Forms.TextBox txt_custname;

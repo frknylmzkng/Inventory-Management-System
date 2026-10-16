@@ -78,21 +78,21 @@ namespace Inventory_Management_System
 
                 if (onlyCritical && hasCategory)
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat AND ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdBarcode AS [Barkod], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat AND ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
                     parameters = new SqlParameter[] { new SqlParameter("@cat", categoryFilter) };
                 }
                 else if (onlyCritical)
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdBarcode AS [Barkod], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
                 }
                 else if (hasCategory)
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat ORDER BY ProdId ASC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdBarcode AS [Barkod], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat ORDER BY ProdId ASC";
                     parameters = new SqlParameter[] { new SqlParameter("@cat", categoryFilter) };
                 }
                 else
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdBarcode AS [Barkod], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC";
                 }
 
                 DataTable dt = DbHelper.ExecuteQuery(query, parameters);
@@ -152,9 +152,21 @@ namespace Inventory_Management_System
             }
         }
 
+        private string GenerateBarcode()
+        {
+            Random rnd = new Random();
+            return "869" + rnd.Next(100000000, 999999999).ToString() + rnd.Next(0, 9).ToString();
+        }
+
+        private void btn_gen_barcode_Click(object sender, EventArgs e)
+        {
+            txt_prodbarcode.Text = GenerateBarcode();
+        }
+
         private void ClearInputs()
         {
             txt_prodid.Text = string.Empty;
+            txt_prodbarcode.Text = string.Empty;
             txt_prodname.Text = string.Empty;
             txt_prodqty.Text = string.Empty;
             txt_prodminqty.Text = "5";
@@ -226,11 +238,19 @@ namespace Inventory_Management_System
                 int.TryParse(txt_prodminqty.Text.Trim(), out minQty);
             }
 
+            string barcode = txt_prodbarcode.Text.Trim();
+            if (string.IsNullOrEmpty(barcode))
+            {
+                barcode = GenerateBarcode();
+                txt_prodbarcode.Text = barcode;
+            }
+
             try
             {
-                string query = "INSERT INTO ProductTable (ProdName, ProdQty, ProdMinQty, ProdCostPrice, ProdPrice, ProdDesc, ProdCat) VALUES (@name, @qty, @minqty, @cost, @price, @desc, @cat)";
+                string query = "INSERT INTO ProductTable (ProdBarcode, ProdName, ProdQty, ProdMinQty, ProdCostPrice, ProdPrice, ProdDesc, ProdCat) VALUES (@barcode, @name, @qty, @minqty, @cost, @price, @desc, @cat)";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
+                    new SqlParameter("@barcode", barcode),
                     new SqlParameter("@name", txt_prodname.Text.Trim()),
                     new SqlParameter("@qty", qty),
                     new SqlParameter("@minqty", minQty),
@@ -289,11 +309,19 @@ namespace Inventory_Management_System
                 int.TryParse(txt_prodminqty.Text.Trim(), out minQty);
             }
 
+            string barcode = txt_prodbarcode.Text.Trim();
+            if (string.IsNullOrEmpty(barcode))
+            {
+                barcode = GenerateBarcode();
+                txt_prodbarcode.Text = barcode;
+            }
+
             try
             {
-                string query = "UPDATE ProductTable SET ProdName = @name, ProdQty = @qty, ProdMinQty = @minqty, ProdCostPrice = @cost, ProdPrice = @price, ProdDesc = @desc, ProdCat = @cat WHERE ProdId = @id";
+                string query = "UPDATE ProductTable SET ProdBarcode = @barcode, ProdName = @name, ProdQty = @qty, ProdMinQty = @minqty, ProdCostPrice = @cost, ProdPrice = @price, ProdDesc = @desc, ProdCat = @cat WHERE ProdId = @id";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
+                    new SqlParameter("@barcode", barcode),
                     new SqlParameter("@name", txt_prodname.Text.Trim()),
                     new SqlParameter("@qty", qty),
                     new SqlParameter("@minqty", minQty),
@@ -357,13 +385,14 @@ namespace Inventory_Management_System
             {
                 DataGridViewRow row = dataGridViewProducts.Rows[e.RowIndex];
                 txt_prodid.Text = row.Cells[0].Value?.ToString() ?? "";
-                txt_prodname.Text = row.Cells[1].Value?.ToString() ?? "";
-                txt_prodqty.Text = row.Cells[2].Value?.ToString() ?? "";
-                txt_prodminqty.Text = row.Cells[3].Value?.ToString() ?? "5";
-                txt_prodcost.Text = row.Cells[4].Value != null ? Convert.ToDecimal(row.Cells[4].Value).ToString("N2") : "0,00";
-                txt_prodprice.Text = row.Cells[5].Value != null ? Convert.ToDecimal(row.Cells[5].Value).ToString("N2") : "";
-                txt_proddesc.Text = row.Cells[7].Value?.ToString() ?? "";
-                string cat = row.Cells[8].Value?.ToString() ?? "";
+                txt_prodbarcode.Text = row.Cells[1].Value?.ToString() ?? "";
+                txt_prodname.Text = row.Cells[2].Value?.ToString() ?? "";
+                txt_prodqty.Text = row.Cells[3].Value?.ToString() ?? "";
+                txt_prodminqty.Text = row.Cells[4].Value?.ToString() ?? "5";
+                txt_prodcost.Text = row.Cells[5].Value != null ? Convert.ToDecimal(row.Cells[5].Value).ToString("N2") : "0,00";
+                txt_prodprice.Text = row.Cells[6].Value != null ? Convert.ToDecimal(row.Cells[6].Value).ToString("N2") : "";
+                txt_proddesc.Text = row.Cells[8].Value?.ToString() ?? "";
+                string cat = row.Cells[9].Value?.ToString() ?? "";
                 if (cmb_prodcat.Items.Contains(cat))
                     cmb_prodcat.SelectedItem = cat;
                 else
