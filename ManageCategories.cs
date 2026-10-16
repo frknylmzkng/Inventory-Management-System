@@ -14,6 +14,11 @@ namespace Inventory_Management_System
 
         private void ManageCategories_Load(object sender, EventArgs e)
         {
+            if (CurrentUser.IsCashier)
+            {
+                btn_delete.Enabled = false;
+            }
+
             FormatGrid();
             PopulateCategories();
             ClearInputs();
@@ -137,6 +142,12 @@ namespace Inventory_Management_System
 
         private void btn_delete_Click(object sender, EventArgs e)
         {
+            if (CurrentUser.IsCashier)
+            {
+                MessageBox.Show("Kasiyer yetkisi ile kategori silinemez!", "Erişim Reddedildi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(txt_catid.Text))
             {
                 MessageBox.Show("Lütfen silinecek kategoriyi listeden seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);

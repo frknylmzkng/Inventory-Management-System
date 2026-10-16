@@ -18,6 +18,20 @@ namespace Inventory_Management_System
 
         private void ViewOrders_Load(object sender, EventArgs e)
         {
+            if (CurrentUser.IsWarehouse)
+            {
+                MessageBox.Show("Depo görevlileri sipariş görüntüleme ekranına erişemez.", "Yetki Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                HomeForm home = new HomeForm();
+                home.Show();
+                this.Close();
+                return;
+            }
+
+            if (!CurrentUser.IsAdmin)
+            {
+                btn_return.Enabled = false;
+            }
+
             FormatGrids();
             PopulateOrders();
         }
@@ -127,10 +141,16 @@ namespace Inventory_Management_System
                 }
                 catch { }
 
-                decimal netProfit = total - cost;
-                decimal margin = total > 0 ? (netProfit / total * 100m) : 0m;
-
-                lbl_summary.Text = $"Seçili Sipariş: #{selectedOrderId} | Müşteri: {custName} | Tarih: {orderDate} | Tutar: {total:N2} TL | Maliyet: {cost:N2} TL | Net Kâr: {netProfit:N2} TL (%{margin:F1}) | Durum: {selectedOrderStatus}";
+                if (CurrentUser.IsAdmin)
+                {
+                    decimal netProfit = total - cost;
+                    decimal margin = total > 0 ? (netProfit / total * 100m) : 0m;
+                    lbl_summary.Text = $"Seçili Sipariş: #{selectedOrderId} | Müşteri: {custName} | Tarih: {orderDate} | Tutar: {total:N2} TL | Maliyet: {cost:N2} TL | Net Kâr: {netProfit:N2} TL (%{margin:F1}) | Durum: {selectedOrderStatus}";
+                }
+                else
+                {
+                    lbl_summary.Text = $"Seçili Sipariş: #{selectedOrderId} | Müşteri: {custName} | Tarih: {orderDate} | Tutar: {total:N2} TL | Durum: {selectedOrderStatus}";
+                }
 
                 LoadOrderDetails(selectedOrderId);
             }
@@ -155,6 +175,12 @@ namespace Inventory_Management_System
 
         private void btn_return_Click(object sender, EventArgs e)
         {
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Sipariş iptal ve iade işlemleri yalnızca Yönetici (Admin) yetkisiyle gerçekleştirilebilir.", "Erişim Reddedildi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (selectedOrderId == 0)
             {
                 MessageBox.Show("Lütfen iade edilecek siparişi listeden seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);

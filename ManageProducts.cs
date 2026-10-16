@@ -18,6 +18,7 @@ namespace Inventory_Management_System
 
         private void ManageProducts_Load(object sender, EventArgs e)
         {
+            ApplyRoleRestrictions();
             FormatGrid();
             LoadCategories();
             if (initialFilterCritical)
@@ -29,6 +30,20 @@ namespace Inventory_Management_System
                 PopulateProducts();
             }
             ClearInputs();
+        }
+
+        private void ApplyRoleRestrictions()
+        {
+            if (!CurrentUser.IsAdmin)
+            {
+                txt_prodcost.Visible = false;
+                lbl_prodcost.Visible = false;
+            }
+
+            if (CurrentUser.IsCashier)
+            {
+                btn_delete.Enabled = false;
+            }
         }
 
         private void FormatGrid()
@@ -97,6 +112,18 @@ namespace Inventory_Management_System
 
                 DataTable dt = DbHelper.ExecuteQuery(query, parameters);
                 dataGridViewProducts.DataSource = dt;
+
+                if (!CurrentUser.IsAdmin)
+                {
+                    if (dataGridViewProducts.Columns["Maliyet (TL)"] != null)
+                    {
+                        dataGridViewProducts.Columns["Maliyet (TL)"].Visible = false;
+                    }
+                    if (dataGridViewProducts.Columns["Birim Kâr (TL)"] != null)
+                    {
+                        dataGridViewProducts.Columns["Birim Kâr (TL)"].Visible = false;
+                    }
+                }
 
                 if (dataGridViewProducts.Columns["Maliyet (TL)"] != null)
                 {
@@ -348,6 +375,12 @@ namespace Inventory_Management_System
 
         private void btn_delete_Click(object sender, EventArgs e)
         {
+            if (CurrentUser.IsCashier)
+            {
+                MessageBox.Show("Kasiyer yetkisi ile ürün silinemez!", "Erişim Reddedildi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(txt_prodid.Text))
             {
                 MessageBox.Show("Lütfen silinecek ürünü listeden seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);

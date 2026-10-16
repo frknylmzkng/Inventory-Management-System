@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 
@@ -44,18 +45,22 @@ namespace Inventory_Management_System
 
             try
             {
-                string query = "SELECT COUNT(*) FROM UserTable WHERE UsernameDB = @user AND PasswordDB = @pass";
+                string query = "SELECT UsernameDB, FullnameDB, RoleDB FROM UserTable WHERE UsernameDB = @user AND PasswordDB = @pass";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@user", username),
                     new SqlParameter("@pass", password)
                 };
 
-                object result = DbHelper.ExecuteScalar(query, parameters);
-                int count = Convert.ToInt32(result);
+                DataTable dt = DbHelper.ExecuteQuery(query, parameters);
 
-                if (count > 0)
+                if (dt != null && dt.Rows.Count > 0)
                 {
+                    DataRow row = dt.Rows[0];
+                    CurrentUser.Username = row["UsernameDB"].ToString();
+                    CurrentUser.FullName = row["FullnameDB"]?.ToString() ?? CurrentUser.Username;
+                    CurrentUser.Role = (row.Table.Columns.Contains("RoleDB") && row["RoleDB"] != DBNull.Value) ? row["RoleDB"].ToString() : "Yönetici (Admin)";
+
                     HomeForm home = new HomeForm();
                     home.Show();
                     this.Hide();

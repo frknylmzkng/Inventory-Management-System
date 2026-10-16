@@ -14,6 +14,15 @@ namespace Inventory_Management_System
 
         private void ManageUsers_Load(object sender, EventArgs e)
         {
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Bu alana yalnızca Yönetici (Admin) yetkisine sahip kullanıcılar erişebilir.", "Erişim Reddedildi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                HomeForm home = new HomeForm();
+                home.Show();
+                this.Close();
+                return;
+            }
+
             FormatGrid();
             PopulateUsers();
             ClearInputs();
@@ -32,7 +41,7 @@ namespace Inventory_Management_System
         {
             try
             {
-                DataTable dt = DbHelper.ExecuteQuery("SELECT UsernameDB AS [Kullanıcı Adı], FullnameDB AS [Ad Soyad], PasswordDB AS [Şifre], TelephoneDB AS [Telefon] FROM UserTable ORDER BY UsernameDB ASC");
+                DataTable dt = DbHelper.ExecuteQuery("SELECT UsernameDB AS [Kullanıcı Adı], FullnameDB AS [Ad Soyad], PasswordDB AS [Şifre], TelephoneDB AS [Telefon], RoleDB AS [Rol] FROM UserTable ORDER BY UsernameDB ASC");
                 dataGridView1.DataSource = dt;
             }
             catch (Exception ex)
@@ -47,6 +56,10 @@ namespace Inventory_Management_System
             txt_fullname.Text = string.Empty;
             txt_password2.Text = string.Empty;
             txt_phone.Text = string.Empty;
+            if (cmb_role.Items.Count > 1)
+            {
+                cmb_role.SelectedIndex = 1; // Default "Kasiyer"
+            }
             dataGridView1.ClearSelection();
             txt_username.Focus();
         }
@@ -76,15 +89,18 @@ namespace Inventory_Management_System
                 return;
             }
 
+            string role = cmb_role.SelectedItem?.ToString() ?? "Kasiyer";
+
             try
             {
-                string query = "INSERT INTO UserTable (UsernameDB, FullnameDB, PasswordDB, TelephoneDB) VALUES (@p1, @p2, @p3, @p4)";
+                string query = "INSERT INTO UserTable (UsernameDB, FullnameDB, PasswordDB, TelephoneDB, RoleDB) VALUES (@p1, @p2, @p3, @p4, @p5)";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@p1", txt_username.Text.Trim()),
                     new SqlParameter("@p2", txt_fullname.Text.Trim()),
                     new SqlParameter("@p3", txt_password2.Text.Trim()),
-                    new SqlParameter("@p4", txt_phone.Text.Trim())
+                    new SqlParameter("@p4", txt_phone.Text.Trim()),
+                    new SqlParameter("@p5", role)
                 };
 
                 DbHelper.ExecuteNonQuery(query, parameters);
@@ -106,20 +122,30 @@ namespace Inventory_Management_System
                 return;
             }
 
+            string role = cmb_role.SelectedItem?.ToString() ?? "Kasiyer";
+
             try
             {
-                string query = "UPDATE UserTable SET FullnameDB = @p2, PasswordDB = @p3, TelephoneDB = @p4 WHERE UsernameDB = @p1";
+                string query = "UPDATE UserTable SET FullnameDB = @p2, PasswordDB = @p3, TelephoneDB = @p4, RoleDB = @p5 WHERE UsernameDB = @p1";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@p1", txt_username.Text.Trim()),
                     new SqlParameter("@p2", txt_fullname.Text.Trim()),
                     new SqlParameter("@p3", txt_password2.Text.Trim()),
-                    new SqlParameter("@p4", txt_phone.Text.Trim())
+                    new SqlParameter("@p4", txt_phone.Text.Trim()),
+                    new SqlParameter("@p5", role)
                 };
 
                 int affected = DbHelper.ExecuteNonQuery(query, parameters);
                 if (affected > 0)
                 {
+                    // Oturum açmış olan kullanıcı kendi profilini güncellediyse oturum bilgilerini güncelle
+                    if (string.Equals(CurrentUser.Username, txt_username.Text.Trim(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        CurrentUser.FullName = txt_fullname.Text.Trim();
+                        CurrentUser.Role = role;
+                    }
+
                     MessageBox.Show("Kullanıcı bilgileri başarıyla güncellendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     PopulateUsers();
                     ClearInputs();
@@ -143,7 +169,22 @@ namespace Inventory_Management_System
                 return;
             }
 
-            DialogResult confirm = MessageBox.Show($"'{txt_username.Text}' kullanıcısını silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            string targetUser = txt_username.Text.Trim();
+
+            // Güvenlik kuralı: Kendi hesabını ve ana admin hesabını silmeyi engelle
+            if (string.Equals(targetUser, CurrentUser.Username, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("Şu anda oturum açmış olduğunuz kendi hesabınızı silemezsiniz!", "İşlem Engellendi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (string.Equals(targetUser, "admin", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("Sistem ana yöneticisi ('admin') hesabı silinemez!", "İşlem Engellendi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult confirm = MessageBox.Show($"'{targetUser}' kullanıcısını silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm != DialogResult.Yes) return;
 
             try
@@ -151,7 +192,7 @@ namespace Inventory_Management_System
                 string query = "DELETE FROM UserTable WHERE UsernameDB = @p1";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@p1", txt_username.Text.Trim())
+                    new SqlParameter("@p1", targetUser)
                 };
 
                 int affected = DbHelper.ExecuteNonQuery(query, parameters);
@@ -181,6 +222,16 @@ namespace Inventory_Management_System
                 txt_fullname.Text = row.Cells[1].Value?.ToString() ?? "";
                 txt_password2.Text = row.Cells[2].Value?.ToString() ?? "";
                 txt_phone.Text = row.Cells[3].Value?.ToString() ?? "";
+
+                string role = row.Cells.Count > 4 ? (row.Cells[4].Value?.ToString() ?? "") : "";
+                if (!string.IsNullOrEmpty(role) && cmb_role.Items.Contains(role))
+                {
+                    cmb_role.SelectedItem = role;
+                }
+                else
+                {
+                    cmb_role.SelectedIndex = 1;
+                }
             }
         }
 

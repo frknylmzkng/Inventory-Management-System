@@ -86,6 +86,7 @@
     <Compile Include="ManageUsers.Designer.cs">
       <DependentUpon>ManageUsers.cs</DependentUpon>
     </Compile>
+    <Compile Include="CurrentUser.cs" />
     <Compile Include="DbHelper.cs" />
     <Compile Include="ReceiptPrinter.cs" />
     <Compile Include="HomeForm.cs">

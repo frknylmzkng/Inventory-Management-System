@@ -23,6 +23,15 @@ namespace Inventory_Management_System
 
         private void ManageOrders_Load(object sender, EventArgs e)
         {
+            if (CurrentUser.IsWarehouse)
+            {
+                MessageBox.Show("Depo görevlileri sipariş oluşturma ekranına erişemez.", "Yetki Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                HomeForm home = new HomeForm();
+                home.Show();
+                this.Close();
+                return;
+            }
+
             InitCartTable();
             FormatGrids();
             LoadCustomers();

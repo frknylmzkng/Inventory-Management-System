@@ -40,6 +40,8 @@ namespace Inventory_Management_System
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label_role = new System.Windows.Forms.Label();
+            this.cmb_role = new System.Windows.Forms.ComboBox();
             this.btn_add = new System.Windows.Forms.Button();
             this.btn_edit = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
@@ -164,6 +166,28 @@ namespace Inventory_Management_System
             this.label5.TabIndex = 8;
             this.label5.Text = "Telefon";
             // 
+            // label_role
+            // 
+            this.label_role.AutoSize = true;
+            this.label_role.Location = new System.Drawing.Point(41, 267);
+            this.label_role.Name = "label_role";
+            this.label_role.Size = new System.Drawing.Size(23, 13);
+            this.label_role.TabIndex = 18;
+            this.label_role.Text = "Rol";
+            // 
+            // cmb_role
+            // 
+            this.cmb_role.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_role.FormattingEnabled = true;
+            this.cmb_role.Items.AddRange(new object[] {
+            "Yönetici (Admin)",
+            "Kasiyer",
+            "Depo Görevlisi"});
+            this.cmb_role.Location = new System.Drawing.Point(167, 264);
+            this.cmb_role.Name = "cmb_role";
+            this.cmb_role.Size = new System.Drawing.Size(100, 21);
+            this.cmb_role.TabIndex = 5;
+            // 
             // btn_add
             // 
             this.btn_add.Location = new System.Drawing.Point(44, 294);
@@ -246,6 +270,8 @@ namespace Inventory_Management_System
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AntiqueWhite;
             this.ClientSize = new System.Drawing.Size(880, 570);
+            this.Controls.Add(this.cmb_role);
+            this.Controls.Add(this.label_role);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btn_clear);
@@ -287,6 +313,8 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label_role;
+        private System.Windows.Forms.ComboBox cmb_role;
         private System.Windows.Forms.Button btn_add;
         private System.Windows.Forms.Button btn_edit;
         private System.Windows.Forms.Button btn_delete;
