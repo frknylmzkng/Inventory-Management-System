@@ -15,6 +15,11 @@ namespace Inventory_Management_System
             LoadStats();
         }
 
+        private void HomeForm_Activated(object sender, EventArgs e)
+        {
+            LoadStats();
+        }
+
         public void LoadStats()
         {
             try
@@ -79,7 +84,29 @@ namespace Inventory_Management_System
 
         private void btnOrders_Click(object sender, EventArgs e)
         {
-            ManageOrders orders = new ManageOrders();
+            ViewOrders orders = new ViewOrders();
+            orders.Show();
+            this.Hide();
+        }
+
+        private void panelCardProducts_Click(object sender, EventArgs e)
+        {
+            btnProducts_Click(sender, e);
+        }
+
+        private void panelCardCategories_Click(object sender, EventArgs e)
+        {
+            btnCategories_Click(sender, e);
+        }
+
+        private void panelCardUsers_Click(object sender, EventArgs e)
+        {
+            btnUsers_Click(sender, e);
+        }
+
+        private void panelCardOrders_Click(object sender, EventArgs e)
+        {
+            ViewOrders orders = new ViewOrders();
             orders.Show();
             this.Hide();
         }

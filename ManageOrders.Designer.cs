@@ -41,6 +41,7 @@ namespace Inventory_Management_System
             this.panel2 = new System.Windows.Forms.Panel();
             this.btn_clear_cart = new System.Windows.Forms.Button();
             this.btn_clear = new System.Windows.Forms.Button();
+            this.btn_view_orders = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCustomers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).BeginInit();
@@ -50,6 +51,7 @@ namespace Inventory_Management_System
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.DarkTurquoise;
+            this.panel1.Controls.Add(this.btn_view_orders);
             this.panel1.Controls.Add(this.btn_back);
             this.panel1.Controls.Add(this.btn_exit);
             this.panel1.Controls.Add(this.label1);
@@ -84,6 +86,20 @@ namespace Inventory_Management_System
             this.btn_exit.Text = "X";
             this.btn_exit.UseVisualStyleBackColor = true;
             this.btn_exit.Click += new System.EventHandler(this.btn_exit_Click);
+            // 
+            // btn_view_orders
+            // 
+            this.btn_view_orders.BackColor = System.Drawing.Color.White;
+            this.btn_view_orders.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_view_orders.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_view_orders.ForeColor = System.Drawing.Color.DarkTurquoise;
+            this.btn_view_orders.Location = new System.Drawing.Point(730, 18);
+            this.btn_view_orders.Name = "btn_view_orders";
+            this.btn_view_orders.Size = new System.Drawing.Size(170, 45);
+            this.btn_view_orders.TabIndex = 17;
+            this.btn_view_orders.Text = "📋 SİPARİŞ LİSTESİ";
+            this.btn_view_orders.UseVisualStyleBackColor = false;
+            this.btn_view_orders.Click += new System.EventHandler(this.btn_view_orders_Click);
             // 
             // label1
             // 
@@ -372,6 +388,7 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btn_clear_cart;
         private System.Windows.Forms.Button btn_clear;
+        private System.Windows.Forms.Button btn_view_orders;
         private System.Windows.Forms.Button btn_back;
     }
 }

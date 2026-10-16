@@ -117,6 +117,12 @@
     <Compile Include="ManageOrders.Designer.cs">
       <DependentUpon>ManageOrders.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewOrders.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewOrders.Designer.cs">
+      <DependentUpon>ViewOrders.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Login.resx">

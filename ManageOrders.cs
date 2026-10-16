@@ -267,5 +267,12 @@ namespace Inventory_Management_System
         {
             btn_back_Click(sender, e);
         }
+
+        private void btn_view_orders_Click(object sender, EventArgs e)
+        {
+            ViewOrders vo = new ViewOrders();
+            vo.Show();
+            this.Close();
+        }
     }
 }
