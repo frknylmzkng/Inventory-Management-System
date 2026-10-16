@@ -207,47 +207,72 @@ namespace Inventory_Management_System
                 return;
             }
 
-            try
+            using (SqlConnection conn = new SqlConnection(DbHelper.ConnectionString))
             {
-                // 1. Insert into OrderTable
-                string orderQuery = "INSERT INTO OrderTable (CustId, CustName, OrderDate, TotalAmt) VALUES (@custid, @custname, @date, @total)";
-                SqlParameter[] orderParams = new SqlParameter[]
+                conn.Open();
+                using (SqlTransaction trans = conn.BeginTransaction())
                 {
-                    new SqlParameter("@custid", Convert.ToInt32(txt_custid.Text)),
-                    new SqlParameter("@custname", txt_custname.Text.Trim()),
-                    new SqlParameter("@date", DateTime.Now),
-                    new SqlParameter("@total", grandTotal)
-                };
-
-                DbHelper.ExecuteNonQuery(orderQuery, orderParams);
-
-                // 2. Decrement stock for each item in ProductTable
-                foreach (DataRow row in cartTable.Rows)
-                {
-                    int prodId = Convert.ToInt32(row["Ürün ID"]);
-                    int qty = Convert.ToInt32(row["Miktar"]);
-
-                    string updateStockQuery = "UPDATE ProductTable SET ProdQty = ProdQty - @qty WHERE ProdId = @id";
-                    SqlParameter[] stockParams = new SqlParameter[]
+                    try
                     {
-                        new SqlParameter("@qty", qty),
-                        new SqlParameter("@id", prodId)
-                    };
+                        // 1. Insert into OrderTable and retrieve generated OrderId
+                        string orderQuery = "INSERT INTO OrderTable (CustId, CustName, OrderDate, TotalAmt, OrderStatus) OUTPUT INSERTED.OrderId VALUES (@custid, @custname, @date, @total, @status)";
+                        int orderId;
+                        using (SqlCommand cmd = new SqlCommand(orderQuery, conn, trans))
+                        {
+                            cmd.Parameters.AddWithValue("@custid", Convert.ToInt32(txt_custid.Text));
+                            cmd.Parameters.AddWithValue("@custname", txt_custname.Text.Trim());
+                            cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                            cmd.Parameters.AddWithValue("@total", grandTotal);
+                            cmd.Parameters.AddWithValue("@status", "Tamamlandı");
+                            orderId = (int)cmd.ExecuteScalar();
+                        }
 
-                    DbHelper.ExecuteNonQuery(updateStockQuery, stockParams);
+                        // 2. Insert items into OrderDetailTable and decrement stock in ProductTable
+                        foreach (DataRow row in cartTable.Rows)
+                        {
+                            int prodId = Convert.ToInt32(row["Ürün ID"]);
+                            string prodName = row["Ürün Adı"].ToString();
+                            int qty = Convert.ToInt32(row["Miktar"]);
+                            decimal price = Convert.ToDecimal(row["Fiyat"]);
+                            decimal total = Convert.ToDecimal(row["Toplam"]);
+
+                            string detailQuery = "INSERT INTO OrderDetailTable (OrderId, ProdId, ProdName, Qty, Price, Total) VALUES (@orderid, @prodid, @prodname, @qty, @price, @total)";
+                            using (SqlCommand cmd = new SqlCommand(detailQuery, conn, trans))
+                            {
+                                cmd.Parameters.AddWithValue("@orderid", orderId);
+                                cmd.Parameters.AddWithValue("@prodid", prodId);
+                                cmd.Parameters.AddWithValue("@prodname", prodName);
+                                cmd.Parameters.AddWithValue("@qty", qty);
+                                cmd.Parameters.AddWithValue("@price", price);
+                                cmd.Parameters.AddWithValue("@total", total);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            string updateStockQuery = "UPDATE ProductTable SET ProdQty = ProdQty - @qty WHERE ProdId = @id";
+                            using (SqlCommand cmd = new SqlCommand(updateStockQuery, conn, trans))
+                            {
+                                cmd.Parameters.AddWithValue("@qty", qty);
+                                cmd.Parameters.AddWithValue("@id", prodId);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        trans.Commit();
+
+                        MessageBox.Show($"#{orderId} numaralı sipariş başarıyla tamamlandı!\nToplam Tutar: {grandTotal:N2} TL", "Sipariş Tamamlandı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // Clear & reload
+                        cartTable.Rows.Clear();
+                        CalculateTotal();
+                        ClearSelections();
+                        LoadProducts();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        MessageBox.Show("Sipariş kaydedilirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
-
-                MessageBox.Show($"Sipariş başarıyla tamamlandı! Toplam Tutar: {grandTotal:N2} TL", "Sipariş Tamamlandı", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // Clear & reload
-                cartTable.Rows.Clear();
-                CalculateTotal();
-                ClearSelections();
-                LoadProducts();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Sipariş kaydedilirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

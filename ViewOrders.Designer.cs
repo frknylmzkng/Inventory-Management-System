@@ -21,16 +21,21 @@ namespace Inventory_Management_System
             this.btn_back = new System.Windows.Forms.Button();
             this.btn_exit = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.lblOrdersTitle = new System.Windows.Forms.Label();
             this.dataGridViewOrders = new System.Windows.Forms.DataGridView();
+            this.lblDetailsTitle = new System.Windows.Forms.Label();
+            this.dataGridViewOrderDetails = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lbl_summary = new System.Windows.Forms.Label();
             this.btn_new_order = new System.Windows.Forms.Button();
+            this.btn_return = new System.Windows.Forms.Button();
             this.btn_delete = new System.Windows.Forms.Button();
             this.btn_clear = new System.Windows.Forms.Button();
             this.btn_refresh = new System.Windows.Forms.Button();
             this.btn_home = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOrders)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOrderDetails)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -42,7 +47,7 @@ namespace Inventory_Management_System
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(880, 100);
+            this.panel1.Size = new System.Drawing.Size(960, 100);
             this.panel1.TabIndex = 0;
             // 
             // btn_back
@@ -63,7 +68,7 @@ namespace Inventory_Management_System
             this.btn_exit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_exit.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_exit.ForeColor = System.Drawing.Color.White;
-            this.btn_exit.Location = new System.Drawing.Point(818, 12);
+            this.btn_exit.Location = new System.Drawing.Point(898, 12);
             this.btn_exit.Name = "btn_exit";
             this.btn_exit.Size = new System.Drawing.Size(50, 50);
             this.btn_exit.TabIndex = 15;
@@ -76,20 +81,51 @@ namespace Inventory_Management_System
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(235, 32);
+            this.label1.Location = new System.Drawing.Point(275, 32);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(410, 37);
             this.label1.TabIndex = 0;
             this.label1.Text = "SİPARİŞ LİSTESİ (ORDERS)";
             // 
+            // lblOrdersTitle
+            // 
+            this.lblOrdersTitle.AutoSize = true;
+            this.lblOrdersTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblOrdersTitle.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.lblOrdersTitle.Location = new System.Drawing.Point(30, 112);
+            this.lblOrdersTitle.Name = "lblOrdersTitle";
+            this.lblOrdersTitle.Size = new System.Drawing.Size(124, 17);
+            this.lblOrdersTitle.TabIndex = 17;
+            this.lblOrdersTitle.Text = "📋 SİPARİŞLER";
+            // 
             // dataGridViewOrders
             // 
             this.dataGridViewOrders.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewOrders.Location = new System.Drawing.Point(40, 115);
+            this.dataGridViewOrders.Location = new System.Drawing.Point(30, 135);
             this.dataGridViewOrders.Name = "dataGridViewOrders";
-            this.dataGridViewOrders.Size = new System.Drawing.Size(800, 315);
+            this.dataGridViewOrders.Size = new System.Drawing.Size(510, 305);
             this.dataGridViewOrders.TabIndex = 1;
             this.dataGridViewOrders.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewOrders_CellClick);
+            this.dataGridViewOrders.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridViewOrders_CellFormatting);
+            // 
+            // lblDetailsTitle
+            // 
+            this.lblDetailsTitle.AutoSize = true;
+            this.lblDetailsTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblDetailsTitle.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.lblDetailsTitle.Location = new System.Drawing.Point(560, 112);
+            this.lblDetailsTitle.Name = "lblDetailsTitle";
+            this.lblDetailsTitle.Size = new System.Drawing.Size(298, 17);
+            this.lblDetailsTitle.TabIndex = 18;
+            this.lblDetailsTitle.Text = "📦 SİPARİŞ KALEMLERİ (ÜRÜN DETAYI)";
+            // 
+            // dataGridViewOrderDetails
+            // 
+            this.dataGridViewOrderDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewOrderDetails.Location = new System.Drawing.Point(560, 135);
+            this.dataGridViewOrderDetails.Name = "dataGridViewOrderDetails";
+            this.dataGridViewOrderDetails.Size = new System.Drawing.Size(370, 305);
+            this.dataGridViewOrderDetails.TabIndex = 19;
             // 
             // panel2
             // 
@@ -97,7 +133,7 @@ namespace Inventory_Management_System
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel2.Location = new System.Drawing.Point(0, 533);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(880, 37);
+            this.panel2.Size = new System.Drawing.Size(960, 37);
             this.panel2.TabIndex = 2;
             // 
             // lbl_summary
@@ -105,11 +141,11 @@ namespace Inventory_Management_System
             this.lbl_summary.AutoSize = true;
             this.lbl_summary.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lbl_summary.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.lbl_summary.Location = new System.Drawing.Point(40, 442);
+            this.lbl_summary.Location = new System.Drawing.Point(30, 452);
             this.lbl_summary.Name = "lbl_summary";
-            this.lbl_summary.Size = new System.Drawing.Size(262, 16);
+            this.lbl_summary.Size = new System.Drawing.Size(315, 16);
             this.lbl_summary.TabIndex = 3;
-            this.lbl_summary.Text = "Seçili Sipariş: Yok (Bir sipariş seçiniz)";
+            this.lbl_summary.Text = "Seçili Sipariş: Yok (Listeden bir sipariş seçiniz)";
             // 
             // btn_new_order
             // 
@@ -117,13 +153,27 @@ namespace Inventory_Management_System
             this.btn_new_order.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_new_order.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_new_order.ForeColor = System.Drawing.Color.White;
-            this.btn_new_order.Location = new System.Drawing.Point(40, 475);
+            this.btn_new_order.Location = new System.Drawing.Point(30, 482);
             this.btn_new_order.Name = "btn_new_order";
-            this.btn_new_order.Size = new System.Drawing.Size(200, 38);
+            this.btn_new_order.Size = new System.Drawing.Size(155, 40);
             this.btn_new_order.TabIndex = 4;
-            this.btn_new_order.Text = "+ YENİ SİPARİŞ OLUŞTUR";
+            this.btn_new_order.Text = "+ YENİ SİPARİŞ";
             this.btn_new_order.UseVisualStyleBackColor = false;
             this.btn_new_order.Click += new System.EventHandler(this.btn_new_order_Click);
+            // 
+            // btn_return
+            // 
+            this.btn_return.BackColor = System.Drawing.Color.OrangeRed;
+            this.btn_return.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_return.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_return.ForeColor = System.Drawing.Color.White;
+            this.btn_return.Location = new System.Drawing.Point(195, 482);
+            this.btn_return.Name = "btn_return";
+            this.btn_return.Size = new System.Drawing.Size(185, 40);
+            this.btn_return.TabIndex = 5;
+            this.btn_return.Text = "↩️ SİPARİŞİ İADE ET";
+            this.btn_return.UseVisualStyleBackColor = false;
+            this.btn_return.Click += new System.EventHandler(this.btn_return_Click);
             // 
             // btn_delete
             // 
@@ -131,11 +181,11 @@ namespace Inventory_Management_System
             this.btn_delete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_delete.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_delete.ForeColor = System.Drawing.Color.White;
-            this.btn_delete.Location = new System.Drawing.Point(255, 475);
+            this.btn_delete.Location = new System.Drawing.Point(390, 482);
             this.btn_delete.Name = "btn_delete";
-            this.btn_delete.Size = new System.Drawing.Size(150, 38);
-            this.btn_delete.TabIndex = 5;
-            this.btn_delete.Text = "SİPARİŞİ SİL";
+            this.btn_delete.Size = new System.Drawing.Size(125, 40);
+            this.btn_delete.TabIndex = 6;
+            this.btn_delete.Text = "🗑️ SİL";
             this.btn_delete.UseVisualStyleBackColor = false;
             this.btn_delete.Click += new System.EventHandler(this.btn_delete_Click);
             // 
@@ -145,10 +195,10 @@ namespace Inventory_Management_System
             this.btn_clear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_clear.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_clear.ForeColor = System.Drawing.Color.White;
-            this.btn_clear.Location = new System.Drawing.Point(420, 475);
+            this.btn_clear.Location = new System.Drawing.Point(525, 482);
             this.btn_clear.Name = "btn_clear";
-            this.btn_clear.Size = new System.Drawing.Size(165, 38);
-            this.btn_clear.TabIndex = 6;
+            this.btn_clear.Size = new System.Drawing.Size(140, 40);
+            this.btn_clear.TabIndex = 7;
             this.btn_clear.Text = "SEÇİMİ TEMİZLE";
             this.btn_clear.UseVisualStyleBackColor = false;
             this.btn_clear.Click += new System.EventHandler(this.btn_clear_Click);
@@ -159,11 +209,11 @@ namespace Inventory_Management_System
             this.btn_refresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_refresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_refresh.ForeColor = System.Drawing.Color.White;
-            this.btn_refresh.Location = new System.Drawing.Point(600, 475);
+            this.btn_refresh.Location = new System.Drawing.Point(675, 482);
             this.btn_refresh.Name = "btn_refresh";
-            this.btn_refresh.Size = new System.Drawing.Size(115, 38);
-            this.btn_refresh.TabIndex = 7;
-            this.btn_refresh.Text = "YENİLE";
+            this.btn_refresh.Size = new System.Drawing.Size(115, 40);
+            this.btn_refresh.TabIndex = 8;
+            this.btn_refresh.Text = "🔄 YENİLE";
             this.btn_refresh.UseVisualStyleBackColor = false;
             this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
             // 
@@ -173,10 +223,10 @@ namespace Inventory_Management_System
             this.btn_home.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_home.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_home.ForeColor = System.Drawing.Color.White;
-            this.btn_home.Location = new System.Drawing.Point(725, 475);
+            this.btn_home.Location = new System.Drawing.Point(800, 482);
             this.btn_home.Name = "btn_home";
-            this.btn_home.Size = new System.Drawing.Size(115, 38);
-            this.btn_home.TabIndex = 8;
+            this.btn_home.Size = new System.Drawing.Size(130, 40);
+            this.btn_home.TabIndex = 9;
             this.btn_home.Text = "◀ ANA MENÜ";
             this.btn_home.UseVisualStyleBackColor = false;
             this.btn_home.Click += new System.EventHandler(this.btn_home_Click);
@@ -186,15 +236,19 @@ namespace Inventory_Management_System
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AntiqueWhite;
-            this.ClientSize = new System.Drawing.Size(880, 570);
+            this.ClientSize = new System.Drawing.Size(960, 570);
             this.Controls.Add(this.btn_home);
             this.Controls.Add(this.btn_refresh);
             this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.btn_delete);
+            this.Controls.Add(this.btn_return);
             this.Controls.Add(this.btn_new_order);
             this.Controls.Add(this.lbl_summary);
             this.Controls.Add(this.panel2);
+            this.Controls.Add(this.dataGridViewOrderDetails);
+            this.Controls.Add(this.lblDetailsTitle);
             this.Controls.Add(this.dataGridViewOrders);
+            this.Controls.Add(this.lblOrdersTitle);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ViewOrders";
@@ -204,6 +258,7 @@ namespace Inventory_Management_System
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOrders)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOrderDetails)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -215,10 +270,14 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Button btn_back;
         private System.Windows.Forms.Button btn_exit;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblOrdersTitle;
         private System.Windows.Forms.DataGridView dataGridViewOrders;
+        private System.Windows.Forms.Label lblDetailsTitle;
+        private System.Windows.Forms.DataGridView dataGridViewOrderDetails;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label lbl_summary;
         private System.Windows.Forms.Button btn_new_order;
+        private System.Windows.Forms.Button btn_return;
         private System.Windows.Forms.Button btn_delete;
         private System.Windows.Forms.Button btn_clear;
         private System.Windows.Forms.Button btn_refresh;
