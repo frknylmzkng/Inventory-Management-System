@@ -181,5 +181,11 @@ namespace Inventory_Management_System
                 txt_custphone.Text = row.Cells[2].Value?.ToString() ?? "";
             }
         }
+
+        private void btn_export_Click(object sender, EventArgs e)
+        {
+            string fileName = $"Musteri_Listesi_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+            DbHelper.ExportToCsv(dataGridViewCustomers, fileName);
+        }
     }
 }

@@ -360,5 +360,11 @@ namespace Inventory_Management_System
             PopulateProducts();
             ClearInputs();
         }
+
+        private void btn_export_Click(object sender, EventArgs e)
+        {
+            string fileName = $"Urun_Stok_Listesi_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+            DbHelper.ExportToCsv(dataGridViewProducts, fileName);
+        }
     }
 }

@@ -45,6 +45,7 @@ namespace Inventory_Management_System
             this.lbl_prodminqty = new System.Windows.Forms.Label();
             this.txt_prodminqty = new System.Windows.Forms.TextBox();
             this.chc_critical = new System.Windows.Forms.CheckBox();
+            this.btn_export = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).BeginInit();
             this.SuspendLayout();
@@ -315,9 +316,9 @@ namespace Inventory_Management_System
             // 
             this.cmb_searchcat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_searchcat.FormattingEnabled = true;
-            this.cmb_searchcat.Location = new System.Drawing.Point(320, 120);
+            this.cmb_searchcat.Location = new System.Drawing.Point(320, 119);
             this.cmb_searchcat.Name = "cmb_searchcat";
-            this.cmb_searchcat.Size = new System.Drawing.Size(180, 21);
+            this.cmb_searchcat.Size = new System.Drawing.Size(150, 21);
             this.cmb_searchcat.TabIndex = 19;
             this.cmb_searchcat.SelectionChangeCommitted += new System.EventHandler(this.cmb_searchcat_SelectionChangeCommitted);
             // 
@@ -327,9 +328,9 @@ namespace Inventory_Management_System
             this.btn_refresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_refresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.btn_refresh.ForeColor = System.Drawing.Color.White;
-            this.btn_refresh.Location = new System.Drawing.Point(510, 119);
+            this.btn_refresh.Location = new System.Drawing.Point(478, 118);
             this.btn_refresh.Name = "btn_refresh";
-            this.btn_refresh.Size = new System.Drawing.Size(85, 23);
+            this.btn_refresh.Size = new System.Drawing.Size(70, 24);
             this.btn_refresh.TabIndex = 20;
             this.btn_refresh.Text = "Yenile";
             this.btn_refresh.UseVisualStyleBackColor = false;
@@ -339,15 +340,29 @@ namespace Inventory_Management_System
             // 
             this.chc_critical.AutoSize = true;
             this.chc_critical.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.chc_critical.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.chc_critical.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.chc_critical.ForeColor = System.Drawing.Color.Crimson;
-            this.chc_critical.Location = new System.Drawing.Point(615, 121);
+            this.chc_critical.Location = new System.Drawing.Point(558, 121);
             this.chc_critical.Name = "chc_critical";
-            this.chc_critical.Size = new System.Drawing.Size(225, 19);
+            this.chc_critical.Size = new System.Drawing.Size(210, 17);
             this.chc_critical.TabIndex = 23;
             this.chc_critical.Text = "⚠️ Sadece Kritik Stokları Göster";
             this.chc_critical.UseVisualStyleBackColor = true;
             this.chc_critical.CheckedChanged += new System.EventHandler(this.chc_critical_CheckedChanged);
+            // 
+            // btn_export
+            // 
+            this.btn_export.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btn_export.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_export.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_export.ForeColor = System.Drawing.Color.White;
+            this.btn_export.Location = new System.Drawing.Point(778, 117);
+            this.btn_export.Name = "btn_export";
+            this.btn_export.Size = new System.Drawing.Size(117, 25);
+            this.btn_export.TabIndex = 24;
+            this.btn_export.Text = "📊 EXCEL\'E AKTAR";
+            this.btn_export.UseVisualStyleBackColor = false;
+            this.btn_export.Click += new System.EventHandler(this.btn_export_Click);
             // 
             // ManageProducts
             // 
@@ -355,6 +370,7 @@ namespace Inventory_Management_System
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AntiqueWhite;
             this.ClientSize = new System.Drawing.Size(920, 570);
+            this.Controls.Add(this.btn_export);
             this.Controls.Add(this.chc_critical);
             this.Controls.Add(this.lbl_prodminqty);
             this.Controls.Add(this.txt_prodminqty);
@@ -423,5 +439,6 @@ namespace Inventory_Management_System
         private System.Windows.Forms.TextBox txt_prodminqty;
         private System.Windows.Forms.Label lbl_prodminqty;
         private System.Windows.Forms.CheckBox chc_critical;
+        private System.Windows.Forms.Button btn_export;
     }
 }

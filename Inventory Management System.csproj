@@ -87,6 +87,7 @@
       <DependentUpon>ManageUsers.cs</DependentUpon>
     </Compile>
     <Compile Include="DbHelper.cs" />
+    <Compile Include="ReceiptPrinter.cs" />
     <Compile Include="HomeForm.cs">
       <SubType>Form</SubType>
     </Compile>

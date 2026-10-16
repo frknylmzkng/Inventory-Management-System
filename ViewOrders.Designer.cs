@@ -22,8 +22,10 @@ namespace Inventory_Management_System
             this.btn_exit = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lblOrdersTitle = new System.Windows.Forms.Label();
+            this.btn_export_orders = new System.Windows.Forms.Button();
             this.dataGridViewOrders = new System.Windows.Forms.DataGridView();
             this.lblDetailsTitle = new System.Windows.Forms.Label();
+            this.btn_print = new System.Windows.Forms.Button();
             this.dataGridViewOrderDetails = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lbl_summary = new System.Windows.Forms.Label();
@@ -92,11 +94,25 @@ namespace Inventory_Management_System
             this.lblOrdersTitle.AutoSize = true;
             this.lblOrdersTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblOrdersTitle.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.lblOrdersTitle.Location = new System.Drawing.Point(30, 112);
+            this.lblOrdersTitle.Location = new System.Drawing.Point(30, 110);
             this.lblOrdersTitle.Name = "lblOrdersTitle";
             this.lblOrdersTitle.Size = new System.Drawing.Size(124, 17);
             this.lblOrdersTitle.TabIndex = 17;
             this.lblOrdersTitle.Text = "📋 SİPARİŞLER";
+            // 
+            // btn_export_orders
+            // 
+            this.btn_export_orders.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btn_export_orders.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_export_orders.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_export_orders.ForeColor = System.Drawing.Color.White;
+            this.btn_export_orders.Location = new System.Drawing.Point(390, 105);
+            this.btn_export_orders.Name = "btn_export_orders";
+            this.btn_export_orders.Size = new System.Drawing.Size(150, 26);
+            this.btn_export_orders.TabIndex = 20;
+            this.btn_export_orders.Text = "📊 EXCEL\'E AKTAR";
+            this.btn_export_orders.UseVisualStyleBackColor = false;
+            this.btn_export_orders.Click += new System.EventHandler(this.btn_export_orders_Click);
             // 
             // dataGridViewOrders
             // 
@@ -113,11 +129,25 @@ namespace Inventory_Management_System
             this.lblDetailsTitle.AutoSize = true;
             this.lblDetailsTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.lblDetailsTitle.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.lblDetailsTitle.Location = new System.Drawing.Point(560, 112);
+            this.lblDetailsTitle.Location = new System.Drawing.Point(560, 110);
             this.lblDetailsTitle.Name = "lblDetailsTitle";
-            this.lblDetailsTitle.Size = new System.Drawing.Size(298, 17);
+            this.lblDetailsTitle.Size = new System.Drawing.Size(165, 17);
             this.lblDetailsTitle.TabIndex = 18;
-            this.lblDetailsTitle.Text = "📦 SİPARİŞ KALEMLERİ (ÜRÜN DETAYI)";
+            this.lblDetailsTitle.Text = "📦 SİPARİŞ KALEMLERİ";
+            // 
+            // btn_print
+            // 
+            this.btn_print.BackColor = System.Drawing.Color.SteelBlue;
+            this.btn_print.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_print.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_print.ForeColor = System.Drawing.Color.White;
+            this.btn_print.Location = new System.Drawing.Point(770, 105);
+            this.btn_print.Name = "btn_print";
+            this.btn_print.Size = new System.Drawing.Size(160, 26);
+            this.btn_print.TabIndex = 21;
+            this.btn_print.Text = "🖨️ FİŞ YAZDIR / PDF";
+            this.btn_print.UseVisualStyleBackColor = false;
+            this.btn_print.Click += new System.EventHandler(this.btn_print_Click);
             // 
             // dataGridViewOrderDetails
             // 
@@ -246,8 +276,10 @@ namespace Inventory_Management_System
             this.Controls.Add(this.lbl_summary);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.dataGridViewOrderDetails);
+            this.Controls.Add(this.btn_print);
             this.Controls.Add(this.lblDetailsTitle);
             this.Controls.Add(this.dataGridViewOrders);
+            this.Controls.Add(this.btn_export_orders);
             this.Controls.Add(this.lblOrdersTitle);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -271,8 +303,10 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Button btn_exit;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblOrdersTitle;
+        private System.Windows.Forms.Button btn_export_orders;
         private System.Windows.Forms.DataGridView dataGridViewOrders;
         private System.Windows.Forms.Label lblDetailsTitle;
+        private System.Windows.Forms.Button btn_print;
         private System.Windows.Forms.DataGridView dataGridViewOrderDetails;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label lbl_summary;

@@ -265,6 +265,48 @@ namespace Inventory_Management_System
             PopulateOrders();
         }
 
+        private void btn_export_orders_Click(object sender, EventArgs e)
+        {
+            string fileName = $"Siparis_Listesi_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+            DbHelper.ExportToCsv(dataGridViewOrders, fileName);
+        }
+
+        private void btn_print_Click(object sender, EventArgs e)
+        {
+            if (selectedOrderId == 0)
+            {
+                MessageBox.Show("Lütfen fişini yazdırmak istediğiniz siparişi listeden seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DataTable dtItems = dataGridViewOrderDetails.DataSource as DataTable;
+            if (dtItems == null || dtItems.Rows.Count == 0)
+            {
+                string query = "SELECT ProdName AS [Ürün Adı], Qty AS [Adet], Price AS [Birim Fiyat (TL)], Total AS [Toplam (TL)] FROM OrderDetailTable WHERE OrderId = @orderid ORDER BY DetailId ASC";
+                dtItems = DbHelper.ExecuteQuery(query, new SqlParameter[] { new SqlParameter("@orderid", selectedOrderId) });
+            }
+
+            // Find selected row
+            DataGridViewRow selectedRow = null;
+            foreach (DataGridViewRow r in dataGridViewOrders.Rows)
+            {
+                if (Convert.ToInt32(r.Cells[0].Value) == selectedOrderId)
+                {
+                    selectedRow = r;
+                    break;
+                }
+            }
+
+            if (selectedRow == null) return;
+
+            string custName = selectedRow.Cells[2].Value?.ToString() ?? "";
+            DateTime orderDate = Convert.ToDateTime(selectedRow.Cells[3].Value);
+            decimal total = Convert.ToDecimal(selectedRow.Cells[4].Value);
+            string status = selectedRow.Cells[5].Value?.ToString() ?? "Tamamlandı";
+
+            ReceiptPrinter.ShowReceipt(selectedOrderId, custName, orderDate, status, total, dtItems);
+        }
+
         private void btn_home_Click(object sender, EventArgs e)
         {
             HomeForm home = new HomeForm();

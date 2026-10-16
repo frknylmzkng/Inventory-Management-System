@@ -259,7 +259,19 @@ namespace Inventory_Management_System
 
                         trans.Commit();
 
-                        MessageBox.Show($"#{orderId} numaralı sipariş başarıyla tamamlandı!\nToplam Tutar: {grandTotal:N2} TL", "Sipariş Tamamlandı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        DialogResult printChoice = MessageBox.Show(
+                            $"#{orderId} numaralı sipariş başarıyla tamamlandı!\nToplam Tutar: {grandTotal:N2} TL\n\nSatış fişini görüntülemek ve yazdırmak ister misiniz?",
+                            "Sipariş Tamamlandı",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Information
+                        );
+
+                        if (printChoice == DialogResult.Yes)
+                        {
+                            DataTable printItems = cartTable.Copy();
+                            string custName = txt_custname.Text.Trim();
+                            ReceiptPrinter.ShowReceipt(orderId, custName, DateTime.Now, "Tamamlandı", grandTotal, printItems);
+                        }
 
                         // Clear & reload
                         cartTable.Rows.Clear();

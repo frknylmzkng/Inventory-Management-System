@@ -32,6 +32,7 @@ namespace Inventory_Management_System
             this.btn_delete = new System.Windows.Forms.Button();
             this.btn_clear = new System.Windows.Forms.Button();
             this.btn_home = new System.Windows.Forms.Button();
+            this.btn_export = new System.Windows.Forms.Button();
             this.dataGridViewCustomers = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
@@ -209,6 +210,20 @@ namespace Inventory_Management_System
             this.btn_home.UseVisualStyleBackColor = false;
             this.btn_home.Click += new System.EventHandler(this.btn_home_Click);
             // 
+            // btn_export
+            // 
+            this.btn_export.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btn_export.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_export.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btn_export.ForeColor = System.Drawing.Color.White;
+            this.btn_export.Location = new System.Drawing.Point(43, 425);
+            this.btn_export.Name = "btn_export";
+            this.btn_export.Size = new System.Drawing.Size(239, 34);
+            this.btn_export.TabIndex = 16;
+            this.btn_export.Text = "📊 EXCEL\'E AKTAR";
+            this.btn_export.UseVisualStyleBackColor = false;
+            this.btn_export.Click += new System.EventHandler(this.btn_export_Click);
+            // 
             // dataGridViewCustomers
             // 
             this.dataGridViewCustomers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -235,6 +250,7 @@ namespace Inventory_Management_System
             this.ClientSize = new System.Drawing.Size(880, 570);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.dataGridViewCustomers);
+            this.Controls.Add(this.btn_export);
             this.Controls.Add(this.btn_clear);
             this.Controls.Add(this.btn_home);
             this.Controls.Add(this.btn_delete);
@@ -275,6 +291,7 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Button btn_delete;
         private System.Windows.Forms.Button btn_clear;
         private System.Windows.Forms.Button btn_home;
+        private System.Windows.Forms.Button btn_export;
         private System.Windows.Forms.DataGridView dataGridViewCustomers;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btn_exit;
