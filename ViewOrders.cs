@@ -250,6 +250,8 @@ namespace Inventory_Management_System
 
                         trans.Commit();
 
+                        DbHelper.LogAction("Sipariş İptal / İade", "Sipariş Yönetimi", $"Sipariş No: #{selectedOrderId} iptal ve iade edildi. {dtItems.Rows.Count} kalem ürün stoğa geri yüklendi.");
+
                         MessageBox.Show($"#{selectedOrderId} numaralı sipariş başarıyla iade edildi!\n{dtItems.Rows.Count} kalem ürün stoğa geri eklendi.", "İade Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         PopulateOrders();
                     }

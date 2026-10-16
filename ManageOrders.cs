@@ -392,6 +392,8 @@ namespace Inventory_Management_System
 
                         trans.Commit();
 
+                        DbHelper.LogAction("Sipariş Oluşturuldu", "Sipariş Yönetimi", $"Sipariş No: #{orderId}, Müşteri: '{txt_custname.Text.Trim()}', Kalem Sayısı: {cartTable.Rows.Count}, Toplam Tutar: {grandTotal:N2} TL");
+
                         DialogResult printChoice = MessageBox.Show(
                             $"#{orderId} numaralı sipariş başarıyla tamamlandı!\nToplam Tutar: {grandTotal:N2} TL\n\nSatış fişini görüntülemek ve yazdırmak ister misiniz?",
                             "Sipariş Tamamlandı",

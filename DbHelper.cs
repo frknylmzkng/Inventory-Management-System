@@ -135,5 +135,30 @@ namespace Inventory_Management_System
                 }
             }
         }
+
+        public static void LogAction(string actionType, string module, string details, string username = null, string userRole = null)
+        {
+            try
+            {
+                string user = !string.IsNullOrEmpty(username) ? username : (CurrentUser.IsLoggedIn ? CurrentUser.Username : "Sistem");
+                string role = !string.IsNullOrEmpty(userRole) ? userRole : (CurrentUser.IsLoggedIn ? CurrentUser.Role : "Bilinmiyor");
+
+                string query = "INSERT INTO AuditLogTable (LogDate, Username, UserRole, ActionType, Module, Details) VALUES (GETDATE(), @user, @role, @action, @module, @details)";
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@user", user),
+                    new SqlParameter("@role", role),
+                    new SqlParameter("@action", actionType ?? ""),
+                    new SqlParameter("@module", module ?? ""),
+                    new SqlParameter("@details", details ?? "")
+                };
+
+                ExecuteNonQuery(query, parameters);
+            }
+            catch
+            {
+                // Audit logging should never disrupt user transactions
+            }
+        }
     }
 }

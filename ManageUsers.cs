@@ -104,6 +104,7 @@ namespace Inventory_Management_System
                 };
 
                 DbHelper.ExecuteNonQuery(query, parameters);
+                DbHelper.LogAction("Kullanıcı Eklendi", "Kullanıcı Yönetimi", $"Kullanıcı: '{txt_username.Text.Trim()}', Ad Soyad: '{txt_fullname.Text.Trim()}', Rol: '{role}'");
                 MessageBox.Show("Kullanıcı başarıyla eklendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 PopulateUsers();
                 ClearInputs();
@@ -146,6 +147,7 @@ namespace Inventory_Management_System
                         CurrentUser.Role = role;
                     }
 
+                    DbHelper.LogAction("Kullanıcı Güncellendi", "Kullanıcı Yönetimi", $"Kullanıcı: '{txt_username.Text.Trim()}', Yeni Ad Soyad: '{txt_fullname.Text.Trim()}', Yeni Rol: '{role}'");
                     MessageBox.Show("Kullanıcı bilgileri başarıyla güncellendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     PopulateUsers();
                     ClearInputs();
@@ -198,6 +200,7 @@ namespace Inventory_Management_System
                 int affected = DbHelper.ExecuteNonQuery(query, parameters);
                 if (affected > 0)
                 {
+                    DbHelper.LogAction("Kullanıcı Silindi", "Kullanıcı Yönetimi", $"Kullanıcı Adı: '{targetUser}' kalıcı olarak silindi.");
                     MessageBox.Show("Kullanıcı başarıyla silindi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     PopulateUsers();
                     ClearInputs();

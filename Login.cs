@@ -61,12 +61,15 @@ namespace Inventory_Management_System
                     CurrentUser.FullName = row["FullnameDB"]?.ToString() ?? CurrentUser.Username;
                     CurrentUser.Role = (row.Table.Columns.Contains("RoleDB") && row["RoleDB"] != DBNull.Value) ? row["RoleDB"].ToString() : "Yönetici (Admin)";
 
+                    DbHelper.LogAction("Giriş Başarılı", "Oturum / Kimlik", $"'{CurrentUser.Username}' ({CurrentUser.Role}) sisteme başarıyla giriş yaptı.", CurrentUser.Username, CurrentUser.Role);
+
                     HomeForm home = new HomeForm();
                     home.Show();
                     this.Hide();
                 }
                 else
                 {
+                    DbHelper.LogAction("Başarısız Giriş", "Oturum / Kimlik", $"'{username}' kullanıcı adı ile hatalı şifre girişi denendi.", username, "Bilinmiyor");
                     MessageBox.Show("Kullanıcı adı veya şifre hatalı!", "Giriş Başarısız", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txt_password.Text = string.Empty;
                     txt_password.Focus();

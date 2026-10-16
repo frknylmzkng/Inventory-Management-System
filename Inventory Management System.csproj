@@ -125,6 +125,12 @@
     <Compile Include="ViewOrders.Designer.cs">
       <DependentUpon>ViewOrders.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewAuditLogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewAuditLogs.Designer.cs">
+      <DependentUpon>ViewAuditLogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Login.resx">

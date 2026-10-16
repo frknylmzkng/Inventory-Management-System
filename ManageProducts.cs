@@ -288,6 +288,7 @@ namespace Inventory_Management_System
                 };
 
                 DbHelper.ExecuteNonQuery(query, parameters);
+                DbHelper.LogAction("Ürün Eklendi", "Ürün Yönetimi", $"Barkod: {barcode}, Ürün Adı: '{txt_prodname.Text.Trim()}', Miktar: {qty}, Kritik Sınır: {minQty}, Satış: {price:N2} TL, Kategori: '{cmb_prodcat.SelectedItem}'");
                 MessageBox.Show("Ürün başarıyla eklendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 PopulateProducts();
                 ClearInputs();
@@ -362,6 +363,7 @@ namespace Inventory_Management_System
                 int affected = DbHelper.ExecuteNonQuery(query, parameters);
                 if (affected > 0)
                 {
+                    DbHelper.LogAction("Ürün Güncellendi", "Ürün Yönetimi", $"ID: {txt_prodid.Text}, Barkod: {barcode}, Ürün Adı: '{txt_prodname.Text.Trim()}', Miktar: {qty}, Kritik Sınır: {minQty}, Satış: {price:N2} TL, Kategori: '{cmb_prodcat.SelectedItem}'");
                     MessageBox.Show("Ürün başarıyla güncellendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     PopulateProducts();
                     ClearInputs();
@@ -387,7 +389,10 @@ namespace Inventory_Management_System
                 return;
             }
 
-            DialogResult confirm = MessageBox.Show($"'{txt_prodname.Text}' ürününü silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            string deletedName = txt_prodname.Text.Trim();
+            string deletedId = txt_prodid.Text.Trim();
+
+            DialogResult confirm = MessageBox.Show($"'{deletedName}' ürününü silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm != DialogResult.Yes) return;
 
             try
@@ -395,12 +400,13 @@ namespace Inventory_Management_System
                 string query = "DELETE FROM ProductTable WHERE ProdId = @id";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@id", Convert.ToInt32(txt_prodid.Text))
+                    new SqlParameter("@id", Convert.ToInt32(deletedId))
                 };
 
                 int affected = DbHelper.ExecuteNonQuery(query, parameters);
                 if (affected > 0)
                 {
+                    DbHelper.LogAction("Ürün Silindi", "Ürün Yönetimi", $"ID: {deletedId}, Ürün Adı: '{deletedName}' kalıcı olarak silindi.");
                     MessageBox.Show("Ürün başarıyla silindi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     PopulateProducts();
                     ClearInputs();

@@ -28,6 +28,7 @@ namespace Inventory_Management_System
             this.btnCustomers = new System.Windows.Forms.Button();
             this.btnOrders = new System.Windows.Forms.Button();
             this.btnLogout = new System.Windows.Forms.Button();
+            this.btnAuditLogs = new System.Windows.Forms.Button();
             this.panelCardUsers = new System.Windows.Forms.Panel();
             this.lblCountUsers = new System.Windows.Forms.Label();
             this.lblCardUsersTitle = new System.Windows.Forms.Label();
@@ -397,12 +398,27 @@ namespace Inventory_Management_System
             this.lblFinanceSummary.Text = "💰 Finansal Özet: Toplam Ciro: 0,00 TL  |  Toplam Maliyet: 0,00 TL  |  Net Kâr: +0,00 TL";
             this.lblFinanceSummary.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // btnAuditLogs
+            // 
+            this.btnAuditLogs.BackColor = System.Drawing.Color.DarkSlateGray;
+            this.btnAuditLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAuditLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnAuditLogs.ForeColor = System.Drawing.Color.White;
+            this.btnAuditLogs.Location = new System.Drawing.Point(240, 435);
+            this.btnAuditLogs.Name = "btnAuditLogs";
+            this.btnAuditLogs.Size = new System.Drawing.Size(400, 48);
+            this.btnAuditLogs.TabIndex = 13;
+            this.btnAuditLogs.Text = "📋 SİSTEM İŞLEM GEÇMİŞİ (AUDIT LOG)";
+            this.btnAuditLogs.UseVisualStyleBackColor = false;
+            this.btnAuditLogs.Click += new System.EventHandler(this.btnAuditLogs_Click);
+            // 
             // HomeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AntiqueWhite;
             this.ClientSize = new System.Drawing.Size(880, 570);
+            this.Controls.Add(this.btnAuditLogs);
             this.Controls.Add(this.lblFinanceSummary);
             this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.btnOrders);
@@ -447,6 +463,7 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Button btnCustomers;
         private System.Windows.Forms.Button btnOrders;
         private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.Button btnAuditLogs;
         private System.Windows.Forms.Label lblFinanceSummary;
         private System.Windows.Forms.Panel panelCardProducts;
         private System.Windows.Forms.Label lblCardProductsTitle;

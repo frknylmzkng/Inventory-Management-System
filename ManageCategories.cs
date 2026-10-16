@@ -93,6 +93,7 @@ namespace Inventory_Management_System
                 };
 
                 DbHelper.ExecuteNonQuery(query, parameters);
+                DbHelper.LogAction("Kategori Eklendi", "Kategori Yönetimi", $"'{txt_catname.Text.Trim()}' kategorisi eklendi.");
                 MessageBox.Show("Kategori başarıyla eklendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 PopulateCategories();
                 ClearInputs();
@@ -129,6 +130,7 @@ namespace Inventory_Management_System
                 int affected = DbHelper.ExecuteNonQuery(query, parameters);
                 if (affected > 0)
                 {
+                    DbHelper.LogAction("Kategori Güncellendi", "Kategori Yönetimi", $"ID: {txt_catid.Text}, Yeni Kategori Adı: '{txt_catname.Text.Trim()}'");
                     MessageBox.Show("Kategori başarıyla güncellendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     PopulateCategories();
                     ClearInputs();
@@ -154,7 +156,10 @@ namespace Inventory_Management_System
                 return;
             }
 
-            DialogResult confirm = MessageBox.Show($"'{txt_catname.Text}' kategorisini silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            string deletedName = txt_catname.Text.Trim();
+            string deletedId = txt_catid.Text.Trim();
+
+            DialogResult confirm = MessageBox.Show($"'{deletedName}' kategorisini silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm != DialogResult.Yes) return;
 
             try
@@ -162,12 +167,13 @@ namespace Inventory_Management_System
                 string query = "DELETE FROM CategoryTable WHERE CatId = @id";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@id", Convert.ToInt32(txt_catid.Text))
+                    new SqlParameter("@id", Convert.ToInt32(deletedId))
                 };
 
                 int affected = DbHelper.ExecuteNonQuery(query, parameters);
                 if (affected > 0)
                 {
+                    DbHelper.LogAction("Kategori Silindi", "Kategori Yönetimi", $"ID: {deletedId}, Kategori Adı: '{deletedName}' silindi.");
                     MessageBox.Show("Kategori başarıyla silindi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     PopulateCategories();
                     ClearInputs();

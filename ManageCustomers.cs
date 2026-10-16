@@ -90,6 +90,7 @@ namespace Inventory_Management_System
                 };
 
                 DbHelper.ExecuteNonQuery(query, parameters);
+                DbHelper.LogAction("Müşteri Eklendi", "Müşteri Yönetimi", $"Müşteri Adı: '{txt_custname.Text.Trim()}', Telefon: '{txt_custphone.Text.Trim()}'");
                 MessageBox.Show("Müşteri başarıyla eklendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 PopulateCustomers();
                 ClearInputs();
@@ -127,6 +128,7 @@ namespace Inventory_Management_System
                 int affected = DbHelper.ExecuteNonQuery(query, parameters);
                 if (affected > 0)
                 {
+                    DbHelper.LogAction("Müşteri Güncellendi", "Müşteri Yönetimi", $"ID: {txt_custid.Text}, Yeni Ad: '{txt_custname.Text.Trim()}', Yeni Tel: '{txt_custphone.Text.Trim()}'");
                     MessageBox.Show("Müşteri başarıyla güncellendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     PopulateCustomers();
                     ClearInputs();
@@ -146,7 +148,10 @@ namespace Inventory_Management_System
                 return;
             }
 
-            DialogResult confirm = MessageBox.Show($"'{txt_custname.Text}' müşterisini silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            string deletedName = txt_custname.Text.Trim();
+            string deletedId = txt_custid.Text.Trim();
+
+            DialogResult confirm = MessageBox.Show($"'{deletedName}' müşterisini silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm != DialogResult.Yes) return;
 
             try
@@ -154,12 +159,13 @@ namespace Inventory_Management_System
                 string query = "DELETE FROM CustomerTable WHERE CustId = @id";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@id", Convert.ToInt32(txt_custid.Text))
+                    new SqlParameter("@id", Convert.ToInt32(deletedId))
                 };
 
                 int affected = DbHelper.ExecuteNonQuery(query, parameters);
                 if (affected > 0)
                 {
+                    DbHelper.LogAction("Müşteri Silindi", "Müşteri Yönetimi", $"ID: {deletedId}, Müşteri: '{deletedName}' silindi.");
                     MessageBox.Show("Müşteri başarıyla silindi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     PopulateCustomers();
                     ClearInputs();
