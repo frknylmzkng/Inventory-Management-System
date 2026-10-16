@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Inventory_Management_System
@@ -38,6 +39,27 @@ namespace Inventory_Management_System
 
                 object critCount = DbHelper.ExecuteScalar("SELECT COUNT(*) FROM ProductTable WHERE ProdQty <= ProdMinQty");
                 lblCountCritical.Text = critCount?.ToString() ?? "0";
+
+                // Financial Overview: Revenue, Cost, Net Profit
+                object revObj = DbHelper.ExecuteScalar("SELECT ISNULL(SUM(TotalAmt), 0) FROM OrderTable WHERE OrderStatus != 'İptal / İade Edildi'");
+                decimal totalRev = (revObj != null && revObj != DBNull.Value) ? Convert.ToDecimal(revObj) : 0m;
+
+                object costObj = DbHelper.ExecuteScalar("SELECT ISNULL(SUM(od.CostPrice * od.Qty), 0) FROM OrderDetailTable od INNER JOIN OrderTable o ON od.OrderId = o.OrderId WHERE o.OrderStatus != 'İptal / İade Edildi'");
+                decimal totalCost = (costObj != null && costObj != DBNull.Value) ? Convert.ToDecimal(costObj) : 0m;
+
+                decimal netProfit = totalRev - totalCost;
+                decimal profitMargin = totalRev > 0 ? (netProfit / totalRev * 100m) : 0m;
+
+                if (netProfit >= 0)
+                {
+                    lblFinanceSummary.ForeColor = Color.DarkGreen;
+                    lblFinanceSummary.Text = $"💰 Finansal Durum: Toplam Ciro: {totalRev:N2} TL   |   Toplam Maliyet: {totalCost:N2} TL   |   Net Kâr: +{netProfit:N2} TL (%{profitMargin:F1} Marj)";
+                }
+                else
+                {
+                    lblFinanceSummary.ForeColor = Color.Crimson;
+                    lblFinanceSummary.Text = $"💰 Finansal Durum: Toplam Ciro: {totalRev:N2} TL   |   Toplam Maliyet: {totalCost:N2} TL   |   Net Zarar: {netProfit:N2} TL (%{profitMargin:F1})";
+                }
             }
             catch (Exception ex)
             {

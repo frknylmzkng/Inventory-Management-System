@@ -89,7 +89,9 @@ namespace Inventory_Management_System
 
                         decimal price = 0;
                         if (row.Table.Columns.Contains("Birim Fiyat (TL)")) decimal.TryParse(row["Birim Fiyat (TL)"].ToString(), out price);
+                        else if (row.Table.Columns.Contains("Satış Fiyatı (TL)")) decimal.TryParse(row["Satış Fiyatı (TL)"].ToString(), out price);
                         else if (row.Table.Columns.Contains("Birim Fiyat")) decimal.TryParse(row["Birim Fiyat"].ToString(), out price);
+                        else if (row.Table.Columns.Contains("Satış Fiyatı")) decimal.TryParse(row["Satış Fiyatı"].ToString(), out price);
                         else if (row.Table.Columns.Contains("Fiyat")) decimal.TryParse(row["Fiyat"].ToString(), out price);
                         else if (row.Table.Columns.Contains("Price")) decimal.TryParse(row["Price"].ToString(), out price);
 

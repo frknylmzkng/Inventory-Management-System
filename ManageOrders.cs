@@ -12,6 +12,7 @@ namespace Inventory_Management_System
         private string selectedProdName = "";
         private decimal selectedProdPrice = 0;
         private int selectedProdStock = 0;
+        private decimal selectedProdCost = 0;
         private decimal grandTotal = 0;
 
         public ManageOrders()
@@ -36,6 +37,7 @@ namespace Inventory_Management_System
             cartTable.Columns.Add("Miktar", typeof(int));
             cartTable.Columns.Add("Birim Fiyat", typeof(decimal));
             cartTable.Columns.Add("Toplam", typeof(decimal));
+            cartTable.Columns.Add("Maliyet", typeof(decimal));
 
             dataGridViewCart.DataSource = cartTable;
         }
@@ -59,6 +61,13 @@ namespace Inventory_Management_System
             dataGridViewCart.ReadOnly = true;
             dataGridViewCart.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewCart.AllowUserToAddRows = false;
+
+            if (dataGridViewCart.Columns.Contains("Maliyet"))
+                dataGridViewCart.Columns["Maliyet"].Visible = false;
+            if (dataGridViewCart.Columns.Contains("Birim Fiyat"))
+                dataGridViewCart.Columns["Birim Fiyat"].DefaultCellStyle.Format = "N2";
+            if (dataGridViewCart.Columns.Contains("Toplam"))
+                dataGridViewCart.Columns["Toplam"].DefaultCellStyle.Format = "N2";
         }
 
         private void LoadCustomers()
@@ -78,8 +87,12 @@ namespace Inventory_Management_System
         {
             try
             {
-                DataTable dt = DbHelper.ExecuteQuery("SELECT ProdId AS [ID], ProdName AS [Ürün Adı], ProdQty AS [Stok], ProdPrice AS [Fiyat], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC");
+                DataTable dt = DbHelper.ExecuteQuery("SELECT ProdId AS [ID], ProdName AS [Ürün Adı], ProdQty AS [Stok], ProdPrice AS [Fiyat], ProdCostPrice AS [Maliyet], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC");
                 dataGridViewProducts.DataSource = dt;
+                if (dataGridViewProducts.Columns.Contains("Maliyet"))
+                    dataGridViewProducts.Columns["Maliyet"].Visible = false;
+                if (dataGridViewProducts.Columns.Contains("Fiyat"))
+                    dataGridViewProducts.Columns["Fiyat"].DefaultCellStyle.Format = "N2";
             }
             catch (Exception ex)
             {
@@ -96,6 +109,7 @@ namespace Inventory_Management_System
             selectedProdName = "";
             selectedProdPrice = 0;
             selectedProdStock = 0;
+            selectedProdCost = 0;
             dataGridViewCustomers.ClearSelection();
             dataGridViewProducts.ClearSelection();
         }
@@ -124,6 +138,7 @@ namespace Inventory_Management_System
                 selectedProdName = row.Cells[1].Value?.ToString() ?? "";
                 selectedProdStock = Convert.ToInt32(row.Cells[2].Value);
                 selectedProdPrice = Convert.ToDecimal(row.Cells[3].Value);
+                selectedProdCost = row.Cells[4].Value != DBNull.Value ? Convert.ToDecimal(row.Cells[4].Value) : 0m;
                 txt_qty.Focus();
             }
         }
@@ -170,7 +185,7 @@ namespace Inventory_Management_System
             if (!alreadyInCart)
             {
                 decimal total = qty * selectedProdPrice;
-                cartTable.Rows.Add(selectedProdId, selectedProdName, qty, selectedProdPrice, total);
+                cartTable.Rows.Add(selectedProdId, selectedProdName, qty, selectedProdPrice, total, selectedProdCost);
             }
 
             CalculateTotal();
@@ -233,10 +248,11 @@ namespace Inventory_Management_System
                             int prodId = Convert.ToInt32(row["Ürün ID"]);
                             string prodName = row["Ürün Adı"].ToString();
                             int qty = Convert.ToInt32(row["Miktar"]);
-                            decimal price = Convert.ToDecimal(row["Fiyat"]);
+                            decimal price = Convert.ToDecimal(row["Birim Fiyat"]);
                             decimal total = Convert.ToDecimal(row["Toplam"]);
+                            decimal cost = (row.Table.Columns.Contains("Maliyet") && row["Maliyet"] != DBNull.Value) ? Convert.ToDecimal(row["Maliyet"]) : 0m;
 
-                            string detailQuery = "INSERT INTO OrderDetailTable (OrderId, ProdId, ProdName, Qty, Price, Total) VALUES (@orderid, @prodid, @prodname, @qty, @price, @total)";
+                            string detailQuery = "INSERT INTO OrderDetailTable (OrderId, ProdId, ProdName, Qty, Price, Total, CostPrice) VALUES (@orderid, @prodid, @prodname, @qty, @price, @total, @cost)";
                             using (SqlCommand cmd = new SqlCommand(detailQuery, conn, trans))
                             {
                                 cmd.Parameters.AddWithValue("@orderid", orderId);
@@ -245,6 +261,7 @@ namespace Inventory_Management_System
                                 cmd.Parameters.AddWithValue("@qty", qty);
                                 cmd.Parameters.AddWithValue("@price", price);
                                 cmd.Parameters.AddWithValue("@total", total);
+                                cmd.Parameters.AddWithValue("@cost", cost);
                                 cmd.ExecuteNonQuery();
                             }
 

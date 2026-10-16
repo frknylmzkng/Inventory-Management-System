@@ -64,7 +64,7 @@ namespace Inventory_Management_System
         {
             try
             {
-                string query = "SELECT ProdName AS [Ürün Adı], Qty AS [Adet], Price AS [Birim Fiyat (TL)], Total AS [Toplam (TL)] FROM OrderDetailTable WHERE OrderId = @orderid ORDER BY DetailId ASC";
+                string query = "SELECT ProdName AS [Ürün Adı], Qty AS [Adet], CostPrice AS [Birim Maliyet (TL)], Price AS [Satış Fiyatı (TL)], Total AS [Toplam Tutar (TL)], ((Price - CostPrice) * Qty) AS [Net Kâr (TL)] FROM OrderDetailTable WHERE OrderId = @orderid ORDER BY DetailId ASC";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@orderid", orderId)
@@ -73,13 +73,21 @@ namespace Inventory_Management_System
                 DataTable dt = DbHelper.ExecuteQuery(query, parameters);
                 dataGridViewOrderDetails.DataSource = dt;
 
-                if (dataGridViewOrderDetails.Columns["Birim Fiyat (TL)"] != null)
+                if (dataGridViewOrderDetails.Columns["Birim Maliyet (TL)"] != null)
                 {
-                    dataGridViewOrderDetails.Columns["Birim Fiyat (TL)"].DefaultCellStyle.Format = "N2";
+                    dataGridViewOrderDetails.Columns["Birim Maliyet (TL)"].DefaultCellStyle.Format = "N2";
                 }
-                if (dataGridViewOrderDetails.Columns["Toplam (TL)"] != null)
+                if (dataGridViewOrderDetails.Columns["Satış Fiyatı (TL)"] != null)
                 {
-                    dataGridViewOrderDetails.Columns["Toplam (TL)"].DefaultCellStyle.Format = "N2";
+                    dataGridViewOrderDetails.Columns["Satış Fiyatı (TL)"].DefaultCellStyle.Format = "N2";
+                }
+                if (dataGridViewOrderDetails.Columns["Toplam Tutar (TL)"] != null)
+                {
+                    dataGridViewOrderDetails.Columns["Toplam Tutar (TL)"].DefaultCellStyle.Format = "N2";
+                }
+                if (dataGridViewOrderDetails.Columns["Net Kâr (TL)"] != null)
+                {
+                    dataGridViewOrderDetails.Columns["Net Kâr (TL)"].DefaultCellStyle.Format = "N2";
                 }
 
                 dataGridViewOrderDetails.ClearSelection();
@@ -107,10 +115,22 @@ namespace Inventory_Management_System
                 selectedOrderId = Convert.ToInt32(row.Cells[0].Value);
                 string custName = row.Cells[2].Value?.ToString() ?? "";
                 string orderDate = Convert.ToDateTime(row.Cells[3].Value).ToString("dd.MM.yyyy HH:mm");
-                string total = Convert.ToDecimal(row.Cells[4].Value).ToString("N2");
+                decimal total = Convert.ToDecimal(row.Cells[4].Value);
                 selectedOrderStatus = row.Cells[5].Value?.ToString() ?? "Tamamlandı";
 
-                lbl_summary.Text = $"Seçili Sipariş: #{selectedOrderId} | Müşteri: {custName} | Tarih: {orderDate} | Tutar: {total} TL | Durum: {selectedOrderStatus}";
+                decimal cost = 0;
+                try
+                {
+                    object costObj = DbHelper.ExecuteScalar("SELECT ISNULL(SUM(CostPrice * Qty), 0) FROM OrderDetailTable WHERE OrderId = @id", new SqlParameter[] { new SqlParameter("@id", selectedOrderId) });
+                    if (costObj != null && costObj != DBNull.Value)
+                        cost = Convert.ToDecimal(costObj);
+                }
+                catch { }
+
+                decimal netProfit = total - cost;
+                decimal margin = total > 0 ? (netProfit / total * 100m) : 0m;
+
+                lbl_summary.Text = $"Seçili Sipariş: #{selectedOrderId} | Müşteri: {custName} | Tarih: {orderDate} | Tutar: {total:N2} TL | Maliyet: {cost:N2} TL | Net Kâr: {netProfit:N2} TL (%{margin:F1}) | Durum: {selectedOrderStatus}";
 
                 LoadOrderDetails(selectedOrderId);
             }

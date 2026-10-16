@@ -43,6 +43,7 @@ namespace Inventory_Management_System
             this.panelCardCritical = new System.Windows.Forms.Panel();
             this.lblCountCritical = new System.Windows.Forms.Label();
             this.lblCardCriticalTitle = new System.Windows.Forms.Label();
+            this.lblFinanceSummary = new System.Windows.Forms.Label();
             this.panelTop.SuspendLayout();
             this.panelCardUsers.SuspendLayout();
             this.panelCardProducts.SuspendLayout();
@@ -383,12 +384,26 @@ namespace Inventory_Management_System
             this.btnLogout.UseVisualStyleBackColor = false;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
             // 
+            // lblFinanceSummary
+            // 
+            this.lblFinanceSummary.BackColor = System.Drawing.Color.White;
+            this.lblFinanceSummary.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblFinanceSummary.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblFinanceSummary.ForeColor = System.Drawing.Color.DarkSlateGray;
+            this.lblFinanceSummary.Location = new System.Drawing.Point(25, 238);
+            this.lblFinanceSummary.Name = "lblFinanceSummary";
+            this.lblFinanceSummary.Size = new System.Drawing.Size(830, 24);
+            this.lblFinanceSummary.TabIndex = 12;
+            this.lblFinanceSummary.Text = "💰 Finansal Özet: Toplam Ciro: 0,00 TL  |  Toplam Maliyet: 0,00 TL  |  Net Kâr: +0,00 TL";
+            this.lblFinanceSummary.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // HomeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AntiqueWhite;
             this.ClientSize = new System.Drawing.Size(880, 570);
+            this.Controls.Add(this.lblFinanceSummary);
             this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.btnOrders);
             this.Controls.Add(this.btnCustomers);
@@ -432,6 +447,7 @@ namespace Inventory_Management_System
         private System.Windows.Forms.Button btnCustomers;
         private System.Windows.Forms.Button btnOrders;
         private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.Label lblFinanceSummary;
         private System.Windows.Forms.Panel panelCardProducts;
         private System.Windows.Forms.Label lblCardProductsTitle;
         private System.Windows.Forms.Label lblCountProducts;

@@ -78,29 +78,37 @@ namespace Inventory_Management_System
 
                 if (onlyCritical && hasCategory)
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat AND ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat AND ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
                     parameters = new SqlParameter[] { new SqlParameter("@cat", categoryFilter) };
                 }
                 else if (onlyCritical)
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdQty <= ProdMinQty ORDER BY ProdQty ASC";
                 }
                 else if (hasCategory)
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat ORDER BY ProdId ASC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable WHERE ProdCat = @cat ORDER BY ProdId ASC";
                     parameters = new SqlParameter[] { new SqlParameter("@cat", categoryFilter) };
                 }
                 else
                 {
-                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdPrice AS [Fiyat], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC";
+                    query = "SELECT ProdId AS [Ürün ID], ProdName AS [Ürün Adı], ProdQty AS [Miktar], ProdMinQty AS [Kritik Sınır], ProdCostPrice AS [Maliyet (TL)], ProdPrice AS [Satış Fiyatı (TL)], (ProdPrice - ProdCostPrice) AS [Birim Kâr (TL)], ProdDesc AS [Açıklama], ProdCat AS [Kategori] FROM ProductTable ORDER BY ProdId ASC";
                 }
 
                 DataTable dt = DbHelper.ExecuteQuery(query, parameters);
                 dataGridViewProducts.DataSource = dt;
 
-                if (dataGridViewProducts.Columns["Fiyat"] != null)
+                if (dataGridViewProducts.Columns["Maliyet (TL)"] != null)
                 {
-                    dataGridViewProducts.Columns["Fiyat"].DefaultCellStyle.Format = "N2";
+                    dataGridViewProducts.Columns["Maliyet (TL)"].DefaultCellStyle.Format = "N2";
+                }
+                if (dataGridViewProducts.Columns["Satış Fiyatı (TL)"] != null)
+                {
+                    dataGridViewProducts.Columns["Satış Fiyatı (TL)"].DefaultCellStyle.Format = "N2";
+                }
+                if (dataGridViewProducts.Columns["Birim Kâr (TL)"] != null)
+                {
+                    dataGridViewProducts.Columns["Birim Kâr (TL)"].DefaultCellStyle.Format = "N2";
                 }
             }
             catch (Exception ex)
@@ -150,6 +158,7 @@ namespace Inventory_Management_System
             txt_prodname.Text = string.Empty;
             txt_prodqty.Text = string.Empty;
             txt_prodminqty.Text = "5";
+            txt_prodcost.Text = string.Empty;
             txt_prodprice.Text = string.Empty;
             txt_proddesc.Text = string.Empty;
             cmb_prodcat.SelectedIndex = -1;
@@ -199,6 +208,12 @@ namespace Inventory_Management_System
                 return;
             }
 
+            decimal costPrice = 0;
+            if (!string.IsNullOrWhiteSpace(txt_prodcost.Text))
+            {
+                decimal.TryParse(txt_prodcost.Text.Trim(), out costPrice);
+            }
+
             if (cmb_prodcat.SelectedItem == null)
             {
                 MessageBox.Show("Lütfen bir kategori seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -213,12 +228,13 @@ namespace Inventory_Management_System
 
             try
             {
-                string query = "INSERT INTO ProductTable (ProdName, ProdQty, ProdMinQty, ProdPrice, ProdDesc, ProdCat) VALUES (@name, @qty, @minqty, @price, @desc, @cat)";
+                string query = "INSERT INTO ProductTable (ProdName, ProdQty, ProdMinQty, ProdCostPrice, ProdPrice, ProdDesc, ProdCat) VALUES (@name, @qty, @minqty, @cost, @price, @desc, @cat)";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@name", txt_prodname.Text.Trim()),
                     new SqlParameter("@qty", qty),
                     new SqlParameter("@minqty", minQty),
+                    new SqlParameter("@cost", costPrice),
                     new SqlParameter("@price", price),
                     new SqlParameter("@desc", txt_proddesc.Text.Trim()),
                     new SqlParameter("@cat", cmb_prodcat.SelectedItem.ToString())
@@ -255,6 +271,12 @@ namespace Inventory_Management_System
                 return;
             }
 
+            decimal costPrice = 0;
+            if (!string.IsNullOrWhiteSpace(txt_prodcost.Text))
+            {
+                decimal.TryParse(txt_prodcost.Text.Trim(), out costPrice);
+            }
+
             if (cmb_prodcat.SelectedItem == null || cmb_prodcat.SelectedIndex == -1)
             {
                 MessageBox.Show("Lütfen bir kategori seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -269,12 +291,13 @@ namespace Inventory_Management_System
 
             try
             {
-                string query = "UPDATE ProductTable SET ProdName = @name, ProdQty = @qty, ProdMinQty = @minqty, ProdPrice = @price, ProdDesc = @desc, ProdCat = @cat WHERE ProdId = @id";
+                string query = "UPDATE ProductTable SET ProdName = @name, ProdQty = @qty, ProdMinQty = @minqty, ProdCostPrice = @cost, ProdPrice = @price, ProdDesc = @desc, ProdCat = @cat WHERE ProdId = @id";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@name", txt_prodname.Text.Trim()),
                     new SqlParameter("@qty", qty),
                     new SqlParameter("@minqty", minQty),
+                    new SqlParameter("@cost", costPrice),
                     new SqlParameter("@price", price),
                     new SqlParameter("@desc", txt_proddesc.Text.Trim()),
                     new SqlParameter("@cat", cmb_prodcat.SelectedItem.ToString()),
@@ -337,9 +360,10 @@ namespace Inventory_Management_System
                 txt_prodname.Text = row.Cells[1].Value?.ToString() ?? "";
                 txt_prodqty.Text = row.Cells[2].Value?.ToString() ?? "";
                 txt_prodminqty.Text = row.Cells[3].Value?.ToString() ?? "5";
-                txt_prodprice.Text = row.Cells[4].Value?.ToString() ?? "";
-                txt_proddesc.Text = row.Cells[5].Value?.ToString() ?? "";
-                string cat = row.Cells[6].Value?.ToString() ?? "";
+                txt_prodcost.Text = row.Cells[4].Value != null ? Convert.ToDecimal(row.Cells[4].Value).ToString("N2") : "0,00";
+                txt_prodprice.Text = row.Cells[5].Value != null ? Convert.ToDecimal(row.Cells[5].Value).ToString("N2") : "";
+                txt_proddesc.Text = row.Cells[7].Value?.ToString() ?? "";
+                string cat = row.Cells[8].Value?.ToString() ?? "";
                 if (cmb_prodcat.Items.Contains(cat))
                     cmb_prodcat.SelectedItem = cat;
                 else

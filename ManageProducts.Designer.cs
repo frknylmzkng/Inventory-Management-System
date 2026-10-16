@@ -46,6 +46,8 @@ namespace Inventory_Management_System
             this.txt_prodminqty = new System.Windows.Forms.TextBox();
             this.chc_critical = new System.Windows.Forms.CheckBox();
             this.btn_export = new System.Windows.Forms.Button();
+            this.lbl_prodcost = new System.Windows.Forms.Label();
+            this.txt_prodcost = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewProducts)).BeginInit();
             this.SuspendLayout();
@@ -141,10 +143,27 @@ namespace Inventory_Management_System
             // 
             // txt_prodprice
             // 
-            this.txt_prodprice.Location = new System.Drawing.Point(140, 225);
+            this.txt_prodprice.Location = new System.Drawing.Point(125, 225);
             this.txt_prodprice.Name = "txt_prodprice";
-            this.txt_prodprice.Size = new System.Drawing.Size(150, 20);
-            this.txt_prodprice.TabIndex = 4;
+            this.txt_prodprice.Size = new System.Drawing.Size(65, 20);
+            this.txt_prodprice.TabIndex = 5;
+            // 
+            // lbl_prodcost
+            // 
+            this.lbl_prodcost.AutoSize = true;
+            this.lbl_prodcost.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lbl_prodcost.Location = new System.Drawing.Point(195, 228);
+            this.lbl_prodcost.Name = "lbl_prodcost";
+            this.lbl_prodcost.Size = new System.Drawing.Size(51, 13);
+            this.lbl_prodcost.TabIndex = 25;
+            this.lbl_prodcost.Text = "Maliyet:";
+            // 
+            // txt_prodcost
+            // 
+            this.txt_prodcost.Location = new System.Drawing.Point(250, 225);
+            this.txt_prodcost.Name = "txt_prodcost";
+            this.txt_prodcost.Size = new System.Drawing.Size(55, 20);
+            this.txt_prodcost.TabIndex = 6;
             // 
             // txt_proddesc
             // 
@@ -198,9 +217,9 @@ namespace Inventory_Management_System
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label5.Location = new System.Drawing.Point(30, 227);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(41, 15);
+            this.label5.Size = new System.Drawing.Size(83, 15);
             this.label5.TabIndex = 10;
-            this.label5.Text = "Fiyat:";
+            this.label5.Text = "Satış Fiyatı:";
             // 
             // label6
             // 
@@ -392,6 +411,8 @@ namespace Inventory_Management_System
             this.Controls.Add(this.cmb_prodcat);
             this.Controls.Add(this.txt_proddesc);
             this.Controls.Add(this.txt_prodprice);
+            this.Controls.Add(this.lbl_prodcost);
+            this.Controls.Add(this.txt_prodcost);
             this.Controls.Add(this.txt_prodqty);
             this.Controls.Add(this.txt_prodname);
             this.Controls.Add(this.txt_prodid);
@@ -417,6 +438,8 @@ namespace Inventory_Management_System
         private System.Windows.Forms.TextBox txt_prodname;
         private System.Windows.Forms.TextBox txt_prodqty;
         private System.Windows.Forms.TextBox txt_prodprice;
+        private System.Windows.Forms.Label lbl_prodcost;
+        private System.Windows.Forms.TextBox txt_prodcost;
         private System.Windows.Forms.TextBox txt_proddesc;
         private System.Windows.Forms.ComboBox cmb_prodcat;
         private System.Windows.Forms.Label label2;
