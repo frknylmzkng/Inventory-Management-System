@@ -57,14 +57,25 @@ namespace Inventory_Management_System
 
         private void btn_back_Click(object sender, EventArgs e)
         {
-            HomeForm home = new HomeForm();
-            home.Show();
+            Form home = Application.OpenForms["HomeForm"];
+            if (home != null)
+            {
+                home.Show();
+            }
+            else
+            {
+                new HomeForm().Show();
+            }
             this.Close();
         }
 
         private void btn_exit_Click(object sender, EventArgs e)
         {
-            btn_back_Click(sender, e);
+            DialogResult confirm = MessageBox.Show("Uygulamadan çıkmak istediğinize emin misiniz?", "Çıkış Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
 
         private void btn_home_Click(object sender, EventArgs e)

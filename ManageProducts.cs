@@ -8,6 +8,7 @@ namespace Inventory_Management_System
 {
     public partial class ManageProducts : Form
     {
+        private static readonly Random rnd = new Random();
         private bool initialFilterCritical = false;
 
         public ManageProducts(bool filterCritical = false)
@@ -181,8 +182,24 @@ namespace Inventory_Management_System
 
         private string GenerateBarcode()
         {
-            Random rnd = new Random();
-            return "869" + rnd.Next(100000000, 999999999).ToString() + rnd.Next(0, 9).ToString();
+            // 12 haneli veri basamakları: "869" + 9 rastgele rakam
+            string prefix12 = "869" + rnd.Next(100000000, 999999999).ToString();
+            while (prefix12.Length < 12)
+            {
+                prefix12 += rnd.Next(0, 10).ToString();
+            }
+
+            // EAN-13 Checksum algoritması:
+            // 1-tabanlı indekste tek haneler (0, 2, 4...) * 1, çift haneler (1, 3, 5...) * 3
+            int sum = 0;
+            for (int i = 0; i < 12; i++)
+            {
+                int digit = prefix12[i] - '0';
+                sum += (i % 2 == 0) ? digit * 1 : digit * 3;
+            }
+
+            int checkDigit = (10 - (sum % 10)) % 10;
+            return prefix12 + checkDigit.ToString();
         }
 
         private void btn_gen_barcode_Click(object sender, EventArgs e)
@@ -212,14 +229,25 @@ namespace Inventory_Management_System
 
         private void btn_back_Click(object sender, EventArgs e)
         {
-            HomeForm home = new HomeForm();
-            home.Show();
+            Form home = Application.OpenForms["HomeForm"];
+            if (home != null)
+            {
+                home.Show();
+            }
+            else
+            {
+                new HomeForm().Show();
+            }
             this.Close();
         }
 
         private void btn_exit_Click(object sender, EventArgs e)
         {
-            btn_back_Click(sender, e);
+            DialogResult confirm = MessageBox.Show("Uygulamadan çıkmak istediğinize emin misiniz?", "Çıkış Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
 
         private void btn_home_Click(object sender, EventArgs e)
@@ -319,10 +347,23 @@ namespace Inventory_Management_System
                 return;
             }
 
+            int prodId = Convert.ToInt32(txt_prodid.Text);
             decimal costPrice = 0;
-            if (!string.IsNullOrWhiteSpace(txt_prodcost.Text))
+            if (!CurrentUser.IsAdmin)
             {
-                decimal.TryParse(txt_prodcost.Text.Trim(), out costPrice);
+                // Admin değilse txt_prodcost gizlidir; veritabanındaki mevcut maliyet değerini koru
+                object existingCostObj = DbHelper.ExecuteScalar("SELECT ProdCostPrice FROM ProductTable WHERE ProdId = @id", new SqlParameter[] { new SqlParameter("@id", prodId) });
+                if (existingCostObj != null && existingCostObj != DBNull.Value)
+                {
+                    costPrice = Convert.ToDecimal(existingCostObj);
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(txt_prodcost.Text))
+                {
+                    decimal.TryParse(txt_prodcost.Text.Trim(), out costPrice);
+                }
             }
 
             if (cmb_prodcat.SelectedItem == null || cmb_prodcat.SelectedIndex == -1)
@@ -423,15 +464,22 @@ namespace Inventory_Management_System
             if (e.RowIndex >= 0 && e.RowIndex < dataGridViewProducts.Rows.Count)
             {
                 DataGridViewRow row = dataGridViewProducts.Rows[e.RowIndex];
-                txt_prodid.Text = row.Cells[0].Value?.ToString() ?? "";
-                txt_prodbarcode.Text = row.Cells[1].Value?.ToString() ?? "";
-                txt_prodname.Text = row.Cells[2].Value?.ToString() ?? "";
-                txt_prodqty.Text = row.Cells[3].Value?.ToString() ?? "";
-                txt_prodminqty.Text = row.Cells[4].Value?.ToString() ?? "5";
-                txt_prodcost.Text = row.Cells[5].Value != null ? Convert.ToDecimal(row.Cells[5].Value).ToString("N2") : "0,00";
-                txt_prodprice.Text = row.Cells[6].Value != null ? Convert.ToDecimal(row.Cells[6].Value).ToString("N2") : "";
-                txt_proddesc.Text = row.Cells[8].Value?.ToString() ?? "";
-                string cat = row.Cells[9].Value?.ToString() ?? "";
+                txt_prodid.Text = (row.Cells["Ürün ID"] != null ? row.Cells["Ürün ID"].Value?.ToString() : row.Cells[0].Value?.ToString()) ?? "";
+                txt_prodbarcode.Text = (row.Cells["Barkod"] != null ? row.Cells["Barkod"].Value?.ToString() : row.Cells[1].Value?.ToString()) ?? "";
+                txt_prodname.Text = (row.Cells["Ürün Adı"] != null ? row.Cells["Ürün Adı"].Value?.ToString() : row.Cells[2].Value?.ToString()) ?? "";
+                txt_prodqty.Text = (row.Cells["Miktar"] != null ? row.Cells["Miktar"].Value?.ToString() : row.Cells[3].Value?.ToString()) ?? "";
+                txt_prodminqty.Text = (row.Cells["Kritik Sınır"] != null ? row.Cells["Kritik Sınır"].Value?.ToString() : row.Cells[4].Value?.ToString()) ?? "5";
+                
+                txt_prodcost.Text = (row.Cells["Maliyet (TL)"] != null && row.Cells["Maliyet (TL)"].Value != null && row.Cells["Maliyet (TL)"].Value != DBNull.Value)
+                    ? Convert.ToDecimal(row.Cells["Maliyet (TL)"].Value).ToString("N2")
+                    : "0,00";
+
+                txt_prodprice.Text = (row.Cells["Satış Fiyatı (TL)"] != null && row.Cells["Satış Fiyatı (TL)"].Value != null && row.Cells["Satış Fiyatı (TL)"].Value != DBNull.Value)
+                    ? Convert.ToDecimal(row.Cells["Satış Fiyatı (TL)"].Value).ToString("N2")
+                    : "";
+
+                txt_proddesc.Text = (row.Cells["Açıklama"] != null ? row.Cells["Açıklama"].Value?.ToString() : row.Cells[8].Value?.ToString()) ?? "";
+                string cat = (row.Cells["Kategori"] != null ? row.Cells["Kategori"].Value?.ToString() : row.Cells[9].Value?.ToString()) ?? "";
                 if (cmb_prodcat.Items.Contains(cat))
                     cmb_prodcat.SelectedItem = cat;
                 else

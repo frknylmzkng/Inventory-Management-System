@@ -20,6 +20,18 @@ namespace Inventory_Management_System
                 txt_password.PasswordChar = '*';
         }
 
+        public void ResetInputs()
+        {
+            txt_password.Text = string.Empty;
+            txt_login.Focus();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            Application.Exit();
+        }
+
         private void lbl_clear_Click(object sender, EventArgs e)
         {
             txt_login.Text = string.Empty;
@@ -45,11 +57,13 @@ namespace Inventory_Management_System
 
             try
             {
-                string query = "SELECT UsernameDB, FullnameDB, RoleDB FROM UserTable WHERE UsernameDB = @user AND PasswordDB = @pass";
+                string passHash = DbHelper.HashPassword(password);
+                string query = "SELECT UsernameDB, FullnameDB, RoleDB, PasswordDB FROM UserTable WHERE UsernameDB = @user AND (PasswordDB = @passHash OR PasswordDB = @passPlain)";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@user", username),
-                    new SqlParameter("@pass", password)
+                    new SqlParameter("@passHash", passHash),
+                    new SqlParameter("@passPlain", password)
                 };
 
                 DataTable dt = DbHelper.ExecuteQuery(query, parameters);
@@ -61,10 +75,35 @@ namespace Inventory_Management_System
                     CurrentUser.FullName = row["FullnameDB"]?.ToString() ?? CurrentUser.Username;
                     CurrentUser.Role = (row.Table.Columns.Contains("RoleDB") && row["RoleDB"] != DBNull.Value) ? row["RoleDB"].ToString() : "Yönetici (Admin)";
 
+                    string currentDbPass = row["PasswordDB"]?.ToString() ?? "";
+                    if (currentDbPass == password && currentDbPass != passHash)
+                    {
+                        // Düz metin şifre tespit edildi; güvenliği sağlamak için veritabanında otomatik SHA-256 olarak güncelle
+                        try
+                        {
+                            DbHelper.ExecuteNonQuery("UPDATE UserTable SET PasswordDB = @passHash WHERE UsernameDB = @user", new SqlParameter[]
+                            {
+                                new SqlParameter("@passHash", passHash),
+                                new SqlParameter("@user", username)
+                            });
+                        }
+                        catch
+                        {
+                            // Migration hatası olsa bile girişe izin ver
+                        }
+                    }
+
                     DbHelper.LogAction("Giriş Başarılı", "Oturum / Kimlik", $"'{CurrentUser.Username}' ({CurrentUser.Role}) sisteme başarıyla giriş yaptı.", CurrentUser.Username, CurrentUser.Role);
 
-                    HomeForm home = new HomeForm();
-                    home.Show();
+                    Form home = Application.OpenForms["HomeForm"];
+                    if (home != null)
+                    {
+                        home.Show();
+                    }
+                    else
+                    {
+                        new HomeForm().Show();
+                    }
                     this.Hide();
                 }
                 else

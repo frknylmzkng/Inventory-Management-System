@@ -1,7 +1,9 @@
 using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 
@@ -9,7 +11,57 @@ namespace Inventory_Management_System
 {
     public static class DbHelper
     {
-        public static string ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\FURKAN YILMAZ\Documents\InventoryDB_03052026.mdf;Integrated Security=True;Connect Timeout=30";
+        static DbHelper()
+        {
+            string docsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            AppDomain.CurrentDomain.SetData("DataDirectory", docsPath);
+        }
+
+        private static string _connectionString;
+        public static string ConnectionString
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_connectionString))
+                    return _connectionString;
+
+                try
+                {
+                    string configConn = ConfigurationManager.ConnectionStrings["InventoryDB"]?.ConnectionString;
+                    if (!string.IsNullOrEmpty(configConn))
+                    {
+                        return configConn;
+                    }
+                }
+                catch
+                {
+                }
+
+                string defaultMdf = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "InventoryDB_03052026.mdf");
+                return $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={defaultMdf};Integrated Security=True;Connect Timeout=30";
+            }
+            set
+            {
+                _connectionString = value;
+            }
+        }
+
+        public static string HashPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password))
+                return string.Empty;
+
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
+        }
 
         public static SqlConnection GetConnection()
         {
@@ -162,7 +214,38 @@ namespace Inventory_Management_System
         }
 
         public static string MasterConnectionString => @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30";
-        public static string DatabaseFilePath => @"C:\Users\FURKAN YILMAZ\Documents\InventoryDB_03052026.mdf";
+        public static string DatabaseFilePath
+        {
+            get
+            {
+                try
+                {
+                    string connStr = ConfigurationManager.ConnectionStrings["InventoryDB"]?.ConnectionString;
+                    if (!string.IsNullOrEmpty(connStr))
+                    {
+                        SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connStr);
+                        if (!string.IsNullOrEmpty(builder.AttachDBFilename))
+                        {
+                            string path = builder.AttachDBFilename;
+                            if (path.Contains("|DataDirectory|"))
+                            {
+                                string dataDir = AppDomain.CurrentDomain.GetData("DataDirectory") as string;
+                                if (string.IsNullOrEmpty(dataDir))
+                                {
+                                    dataDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                                }
+                                path = path.Replace("|DataDirectory|", dataDir.TrimEnd('\\', '/'));
+                            }
+                            return path;
+                        }
+                    }
+                }
+                catch
+                {
+                }
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "InventoryDB_03052026.mdf");
+            }
+        }
 
         public static void BackupDatabase(string destinationBakPath)
         {

@@ -61,14 +61,25 @@ namespace Inventory_Management_System
 
         private void btn_back_Click(object sender, EventArgs e)
         {
-            HomeForm home = new HomeForm();
-            home.Show();
+            Form home = Application.OpenForms["HomeForm"];
+            if (home != null)
+            {
+                home.Show();
+            }
+            else
+            {
+                new HomeForm().Show();
+            }
             this.Close();
         }
 
         private void btn_exit_Click(object sender, EventArgs e)
         {
-            btn_back_Click(sender, e);
+            DialogResult confirm = MessageBox.Show("Uygulamadan çıkmak istediğinize emin misiniz?", "Çıkış Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
 
         private void btn_home_Click(object sender, EventArgs e)
@@ -118,27 +129,60 @@ namespace Inventory_Management_System
                 return;
             }
 
-            try
-            {
-                string query = "UPDATE CategoryTable SET CatName = @name WHERE CatId = @id";
-                SqlParameter[] parameters = new SqlParameter[]
-                {
-                    new SqlParameter("@name", txt_catname.Text.Trim()),
-                    new SqlParameter("@id", Convert.ToInt32(txt_catid.Text))
-                };
+            int catId = Convert.ToInt32(txt_catid.Text);
+            string newCatName = txt_catname.Text.Trim();
 
-                int affected = DbHelper.ExecuteNonQuery(query, parameters);
-                if (affected > 0)
-                {
-                    DbHelper.LogAction("Kategori Güncellendi", "Kategori Yönetimi", $"ID: {txt_catid.Text}, Yeni Kategori Adı: '{txt_catname.Text.Trim()}'");
-                    MessageBox.Show("Kategori başarıyla güncellendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    PopulateCategories();
-                    ClearInputs();
-                }
-            }
-            catch (Exception ex)
+            using (SqlConnection conn = DbHelper.GetConnection())
             {
-                MessageBox.Show("Kategori güncellenirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                conn.Open();
+                using (SqlTransaction trans = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. Fetch old category name
+                        string oldCatName = "";
+                        string selectOldQuery = "SELECT CatName FROM CategoryTable WHERE CatId = @id";
+                        using (SqlCommand cmdOld = new SqlCommand(selectOldQuery, conn, trans))
+                        {
+                            cmdOld.Parameters.AddWithValue("@id", catId);
+                            object oldObj = cmdOld.ExecuteScalar();
+                            oldCatName = oldObj?.ToString() ?? "";
+                        }
+
+                        // 2. Update CategoryTable
+                        string updateCatQuery = "UPDATE CategoryTable SET CatName = @name WHERE CatId = @id";
+                        using (SqlCommand cmdCat = new SqlCommand(updateCatQuery, conn, trans))
+                        {
+                            cmdCat.Parameters.AddWithValue("@name", newCatName);
+                            cmdCat.Parameters.AddWithValue("@id", catId);
+                            cmdCat.ExecuteNonQuery();
+                        }
+
+                        // 3. Update ProductTable
+                        if (!string.IsNullOrEmpty(oldCatName))
+                        {
+                            string updateProdQuery = "UPDATE ProductTable SET ProdCat = @newName WHERE ProdCat = @oldName";
+                            using (SqlCommand cmdProd = new SqlCommand(updateProdQuery, conn, trans))
+                            {
+                                cmdProd.Parameters.AddWithValue("@newName", newCatName);
+                                cmdProd.Parameters.AddWithValue("@oldName", oldCatName);
+                                cmdProd.ExecuteNonQuery();
+                            }
+                        }
+
+                        trans.Commit();
+
+                        DbHelper.LogAction("Kategori Güncellendi", "Kategori Yönetimi", $"ID: {catId}, Eski: '{oldCatName}', Yeni Kategori Adı: '{newCatName}'");
+                        MessageBox.Show("Kategori ve bağlı ürünlerin kategorileri başarıyla güncellendi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        PopulateCategories();
+                        ClearInputs();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        MessageBox.Show("Kategori güncellenirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
         }
 
@@ -158,6 +202,26 @@ namespace Inventory_Management_System
 
             string deletedName = txt_catname.Text.Trim();
             string deletedId = txt_catid.Text.Trim();
+
+            // İlişkisel veri bütünlüğü kontrolü: Bu kategoriye bağlı ürün var mı?
+            try
+            {
+                object countObj = DbHelper.ExecuteScalar("SELECT COUNT(*) FROM ProductTable WHERE ProdCat = @catName", new SqlParameter[]
+                {
+                    new SqlParameter("@catName", deletedName)
+                });
+                int productCount = (countObj != null && countObj != DBNull.Value) ? Convert.ToInt32(countObj) : 0;
+                if (productCount > 0)
+                {
+                    MessageBox.Show($"Bu kategoriye bağlı {productCount} adet ürün bulunmaktadır!\nÜrünler başka bir kategoriye taşınmadan veya silinmeden bu kategori silinemez.", "Silme Engellendi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Kategori kontrol edilirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             DialogResult confirm = MessageBox.Show($"'{deletedName}' kategorisini silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm != DialogResult.Yes) return;

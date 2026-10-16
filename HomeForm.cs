@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -6,6 +7,8 @@ namespace Inventory_Management_System
 {
     public partial class HomeForm : Form
     {
+        private bool isInitialLoad = true;
+
         public HomeForm()
         {
             InitializeComponent();
@@ -15,10 +18,14 @@ namespace Inventory_Management_System
         {
             ApplyRolePermissions();
             LoadStats();
+            isInitialLoad = false;
         }
 
         private void HomeForm_Activated(object sender, EventArgs e)
         {
+            if (isInitialLoad)
+                return;
+
             ApplyRolePermissions();
             LoadStats();
         }
@@ -69,42 +76,45 @@ namespace Inventory_Management_System
         {
             try
             {
-                object prodCount = DbHelper.ExecuteScalar("SELECT COUNT(*) FROM ProductTable");
-                lblCountProducts.Text = prodCount?.ToString() ?? "0";
+                string query = @"
+                    SELECT
+                        (SELECT COUNT(*) FROM ProductTable) AS ProdCount,
+                        (SELECT COUNT(*) FROM CategoryTable) AS CatCount,
+                        (SELECT COUNT(*) FROM UserTable) AS UserCount,
+                        (SELECT COUNT(*) FROM OrderTable) AS OrderCount,
+                        (SELECT COUNT(*) FROM ProductTable WHERE ProdQty <= ProdMinQty) AS CritCount,
+                        (SELECT ISNULL(SUM(TotalAmt), 0) FROM OrderTable WHERE OrderStatus != 'İptal / İade Edildi') AS TotalRev,
+                        (SELECT ISNULL(SUM(od.CostPrice * od.Qty), 0) FROM OrderDetailTable od INNER JOIN OrderTable o ON od.OrderId = o.OrderId WHERE o.OrderStatus != 'İptal / İade Edildi') AS TotalCost";
 
-                object catCount = DbHelper.ExecuteScalar("SELECT COUNT(*) FROM CategoryTable");
-                lblCountCategories.Text = catCount?.ToString() ?? "0";
-
-                object userCount = DbHelper.ExecuteScalar("SELECT COUNT(*) FROM UserTable");
-                lblCountUsers.Text = userCount?.ToString() ?? "0";
-
-                object orderCount = DbHelper.ExecuteScalar("SELECT COUNT(*) FROM OrderTable");
-                lblCountOrders.Text = orderCount?.ToString() ?? "0";
-
-                object critCount = DbHelper.ExecuteScalar("SELECT COUNT(*) FROM ProductTable WHERE ProdQty <= ProdMinQty");
-                lblCountCritical.Text = critCount?.ToString() ?? "0";
-
-                // Financial Overview: Revenue, Cost, Net Profit (Only computed for Admin)
-                if (CurrentUser.IsAdmin)
+                DataTable dt = DbHelper.ExecuteQuery(query);
+                if (dt != null && dt.Rows.Count > 0)
                 {
-                    object revObj = DbHelper.ExecuteScalar("SELECT ISNULL(SUM(TotalAmt), 0) FROM OrderTable WHERE OrderStatus != 'İptal / İade Edildi'");
-                    decimal totalRev = (revObj != null && revObj != DBNull.Value) ? Convert.ToDecimal(revObj) : 0m;
+                    DataRow row = dt.Rows[0];
+                    lblCountProducts.Text = row["ProdCount"]?.ToString() ?? "0";
+                    lblCountCategories.Text = row["CatCount"]?.ToString() ?? "0";
+                    lblCountUsers.Text = row["UserCount"]?.ToString() ?? "0";
+                    lblCountOrders.Text = row["OrderCount"]?.ToString() ?? "0";
+                    lblCountCritical.Text = row["CritCount"]?.ToString() ?? "0";
 
-                    object costObj = DbHelper.ExecuteScalar("SELECT ISNULL(SUM(od.CostPrice * od.Qty), 0) FROM OrderDetailTable od INNER JOIN OrderTable o ON od.OrderId = o.OrderId WHERE o.OrderStatus != 'İptal / İade Edildi'");
-                    decimal totalCost = (costObj != null && costObj != DBNull.Value) ? Convert.ToDecimal(costObj) : 0m;
-
-                    decimal netProfit = totalRev - totalCost;
-                    decimal profitMargin = totalRev > 0 ? (netProfit / totalRev * 100m) : 0m;
-
-                    if (netProfit >= 0)
+                    // Financial Overview: Revenue, Cost, Net Profit (Only computed for Admin)
+                    if (CurrentUser.IsAdmin)
                     {
-                        lblFinanceSummary.ForeColor = Color.DarkGreen;
-                        lblFinanceSummary.Text = $"💰 Finansal Durum: Toplam Ciro: {totalRev:N2} TL   |   Toplam Maliyet: {totalCost:N2} TL   |   Net Kâr: +{netProfit:N2} TL (%{profitMargin:F1} Marj)";
-                    }
-                    else
-                    {
-                        lblFinanceSummary.ForeColor = Color.Crimson;
-                        lblFinanceSummary.Text = $"💰 Finansal Durum: Toplam Ciro: {totalRev:N2} TL   |   Toplam Maliyet: {totalCost:N2} TL   |   Net Zarar: {netProfit:N2} TL (%{profitMargin:F1})";
+                        decimal totalRev = (row["TotalRev"] != null && row["TotalRev"] != DBNull.Value) ? Convert.ToDecimal(row["TotalRev"]) : 0m;
+                        decimal totalCost = (row["TotalCost"] != null && row["TotalCost"] != DBNull.Value) ? Convert.ToDecimal(row["TotalCost"]) : 0m;
+
+                        decimal netProfit = totalRev - totalCost;
+                        decimal profitMargin = totalRev > 0 ? (netProfit / totalRev * 100m) : 0m;
+
+                        if (netProfit >= 0)
+                        {
+                            lblFinanceSummary.ForeColor = Color.DarkGreen;
+                            lblFinanceSummary.Text = $"💰 Finansal Durum: Toplam Ciro: {totalRev:N2} TL   |   Toplam Maliyet: {totalCost:N2} TL   |   Net Kâr: +{netProfit:N2} TL (%{profitMargin:F1} Marj)";
+                        }
+                        else
+                        {
+                            lblFinanceSummary.ForeColor = Color.Crimson;
+                            lblFinanceSummary.Text = $"💰 Finansal Durum: Toplam Ciro: {totalRev:N2} TL   |   Toplam Maliyet: {totalCost:N2} TL   |   Net Zarar: {netProfit:N2} TL (%{profitMargin:F1})";
+                        }
                     }
                 }
             }
@@ -114,17 +124,41 @@ namespace Inventory_Management_System
             }
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            Login login = Application.OpenForms["Login"] as Login;
+            if (login == null || !login.Visible)
+            {
+                Application.Exit();
+            }
+        }
+
         private void btnExit_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            DialogResult confirm = MessageBox.Show("Uygulamadan çıkmak istediğinize emin misiniz?", "Çıkış Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
             DbHelper.LogAction("Çıkış Yapıldı", "Oturum / Kimlik", $"'{CurrentUser.Username}' ({CurrentUser.Role}) oturumu sonlandırdı.");
             CurrentUser.Clear();
-            Login login = new Login();
-            login.Show();
+
+            Login login = Application.OpenForms["Login"] as Login;
+            if (login != null)
+            {
+                login.ResetInputs();
+                login.Show();
+            }
+            else
+            {
+                login = new Login();
+                login.Show();
+            }
             this.Close();
         }
 

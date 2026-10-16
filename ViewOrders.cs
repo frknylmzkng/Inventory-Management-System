@@ -21,8 +21,15 @@ namespace Inventory_Management_System
             if (CurrentUser.IsWarehouse)
             {
                 MessageBox.Show("Depo görevlileri sipariş görüntüleme ekranına erişemez.", "Yetki Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                HomeForm home = new HomeForm();
-                home.Show();
+                Form home = Application.OpenForms["HomeForm"];
+                if (home != null)
+                {
+                    home.Show();
+                }
+                else
+                {
+                    new HomeForm().Show();
+                }
                 this.Close();
                 return;
             }
@@ -30,6 +37,7 @@ namespace Inventory_Management_System
             if (!CurrentUser.IsAdmin)
             {
                 btn_return.Enabled = false;
+                btn_delete.Enabled = false;
             }
 
             FormatGrids();
@@ -102,6 +110,18 @@ namespace Inventory_Management_System
                 if (dataGridViewOrderDetails.Columns["Net Kâr (TL)"] != null)
                 {
                     dataGridViewOrderDetails.Columns["Net Kâr (TL)"].DefaultCellStyle.Format = "N2";
+                }
+
+                if (!CurrentUser.IsAdmin)
+                {
+                    if (dataGridViewOrderDetails.Columns["Birim Maliyet (TL)"] != null)
+                    {
+                        dataGridViewOrderDetails.Columns["Birim Maliyet (TL)"].Visible = false;
+                    }
+                    if (dataGridViewOrderDetails.Columns["Net Kâr (TL)"] != null)
+                    {
+                        dataGridViewOrderDetails.Columns["Net Kâr (TL)"].Visible = false;
+                    }
                 }
 
                 dataGridViewOrderDetails.ClearSelection();
@@ -266,6 +286,12 @@ namespace Inventory_Management_System
 
         private void btn_delete_Click(object sender, EventArgs e)
         {
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Bu işlemi gerçekleştirme yetkiniz bulunmamaktadır.", "Yetki Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (selectedOrderId == 0)
             {
                 MessageBox.Show("Lütfen silinecek siparişi listeden seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -281,18 +307,40 @@ namespace Inventory_Management_System
             DialogResult confirm = MessageBox.Show(prompt, "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (confirm != DialogResult.Yes) return;
 
-            try
+            using (SqlConnection conn = DbHelper.GetConnection())
             {
-                // Delete detail rows then order row
-                DbHelper.ExecuteNonQuery("DELETE FROM OrderDetailTable WHERE OrderId = @id", new SqlParameter[] { new SqlParameter("@id", selectedOrderId) });
-                DbHelper.ExecuteNonQuery("DELETE FROM OrderTable WHERE OrderId = @id", new SqlParameter[] { new SqlParameter("@id", selectedOrderId) });
+                conn.Open();
+                using (SqlTransaction trans = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        string deleteDetailQuery = "DELETE FROM OrderDetailTable WHERE OrderId = @id";
+                        using (SqlCommand cmd = new SqlCommand(deleteDetailQuery, conn, trans))
+                        {
+                            cmd.Parameters.AddWithValue("@id", selectedOrderId);
+                            cmd.ExecuteNonQuery();
+                        }
 
-                MessageBox.Show("Sipariş başarıyla silindi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                PopulateOrders();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Sipariş silinirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        string deleteOrderQuery = "DELETE FROM OrderTable WHERE OrderId = @id";
+                        using (SqlCommand cmd = new SqlCommand(deleteOrderQuery, conn, trans))
+                        {
+                            cmd.Parameters.AddWithValue("@id", selectedOrderId);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        trans.Commit();
+
+                        DbHelper.LogAction("Sipariş Silindi", "Sipariş Yönetimi", $"Sipariş No: #{selectedOrderId} (Durum: {selectedOrderStatus}) kalıcı olarak silindi.");
+
+                        MessageBox.Show("Sipariş başarıyla silindi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        PopulateOrders();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        MessageBox.Show("Sipariş silinirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
         }
 
@@ -357,8 +405,15 @@ namespace Inventory_Management_System
 
         private void btn_home_Click(object sender, EventArgs e)
         {
-            HomeForm home = new HomeForm();
-            home.Show();
+            Form home = Application.OpenForms["HomeForm"];
+            if (home != null)
+            {
+                home.Show();
+            }
+            else
+            {
+                new HomeForm().Show();
+            }
             this.Close();
         }
 
@@ -369,7 +424,11 @@ namespace Inventory_Management_System
 
         private void btn_exit_Click(object sender, EventArgs e)
         {
-            btn_home_Click(sender, e);
+            DialogResult confirm = MessageBox.Show("Uygulamadan çıkmak istediğinize emin misiniz?", "Çıkış Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
     }
 }
