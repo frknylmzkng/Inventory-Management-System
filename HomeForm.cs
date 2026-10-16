@@ -32,23 +32,25 @@ namespace Inventory_Management_System
 
             if (CurrentUser.IsCashier)
             {
-                // Kasiyer: Hide user management, users card, audit logs, and financial overview
+                // Kasiyer: Hide user management, users card, audit logs, backup, and financial overview
                 btnUsers.Visible = false;
                 panelCardUsers.Visible = false;
                 lblFinanceSummary.Visible = false;
                 btnAuditLogs.Visible = false;
+                btnBackup.Visible = false;
                 btnOrders.Visible = true;
                 panelCardOrders.Visible = true;
             }
             else if (CurrentUser.IsWarehouse)
             {
-                // Depo Görevlisi: Hide user management, users card, orders, audit logs, and financial overview
+                // Depo Görevlisi: Hide user management, users card, orders, audit logs, backup, and financial overview
                 btnUsers.Visible = false;
                 panelCardUsers.Visible = false;
                 btnOrders.Visible = false;
                 panelCardOrders.Visible = false;
                 lblFinanceSummary.Visible = false;
                 btnAuditLogs.Visible = false;
+                btnBackup.Visible = false;
             }
             else
             {
@@ -59,6 +61,7 @@ namespace Inventory_Management_System
                 panelCardOrders.Visible = true;
                 lblFinanceSummary.Visible = true;
                 btnAuditLogs.Visible = true;
+                btnBackup.Visible = true;
             }
         }
 
@@ -134,6 +137,18 @@ namespace Inventory_Management_System
             }
             ViewAuditLogs logs = new ViewAuditLogs();
             logs.Show();
+            this.Hide();
+        }
+
+        private void btnBackup_Click(object sender, EventArgs e)
+        {
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Bu alana yalnızca Yönetici (Admin) yetkisine sahip kullanıcılar erişebilir.", "Erişim Reddedildi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            ManageBackupRestore backupForm = new ManageBackupRestore();
+            backupForm.Show();
             this.Hide();
         }
 

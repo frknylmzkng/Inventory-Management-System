@@ -160,5 +160,63 @@ namespace Inventory_Management_System
                 // Audit logging should never disrupt user transactions
             }
         }
+
+        public static string MasterConnectionString => @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30";
+        public static string DatabaseFilePath => @"C:\Users\FURKAN YILMAZ\Documents\InventoryDB_03052026.mdf";
+
+        public static void BackupDatabase(string destinationBakPath)
+        {
+            using (SqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                string dbName = conn.Database;
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandTimeout = 120;
+                    cmd.CommandText = "BACKUP DATABASE [" + dbName + "] TO DISK = @path WITH FORMAT, INIT, NAME = 'Inventory Management System Full Backup'";
+                    cmd.Parameters.AddWithValue("@path", destinationBakPath);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void RestoreDatabase(string sourceBakPath)
+        {
+            SqlConnection.ClearAllPools();
+
+            using (SqlConnection conn = new SqlConnection(MasterConnectionString))
+            {
+                conn.Open();
+                string dbName = DatabaseFilePath;
+                try
+                {
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandTimeout = 180;
+                        cmd.CommandText = $@"
+                            ALTER DATABASE [{dbName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+                            RESTORE DATABASE [{dbName}] FROM DISK = @path WITH REPLACE;
+                            ALTER DATABASE [{dbName}] SET MULTI_USER;
+                        ";
+                        cmd.Parameters.AddWithValue("@path", sourceBakPath);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                finally
+                {
+                    try
+                    {
+                        using (SqlCommand resetCmd = conn.CreateCommand())
+                        {
+                            resetCmd.CommandText = $"IF DB_ID('{dbName}') IS NOT NULL ALTER DATABASE [{dbName}] SET MULTI_USER;";
+                            resetCmd.ExecuteNonQuery();
+                        }
+                    }
+                    catch { }
+                }
+            }
+
+            SqlConnection.ClearAllPools();
+        }
     }
 }
